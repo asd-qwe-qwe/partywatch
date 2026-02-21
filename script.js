@@ -34,6 +34,7 @@ function updateIcon(theme) {
 const navbar = document.querySelector('.navbar');
 
 window.addEventListener('scroll', () => {
+    if (!navbar) return;
     if (window.scrollY > 50) {
         navbar.style.padding = '0';
         navbar.style.backgroundColor = 'var(--bg-glass)';
@@ -102,7 +103,7 @@ if (viewAllBtn) {
     });
 }
 // --- Auth Logic ---
-document.addEventListener('DOMContentLoaded', () => {
+function initAuth() {
     // Select forms safely
     const authForm = document.querySelector('.auth-card form');
     const usernameInput = document.getElementById('username');
@@ -153,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
             btn.disabled = true;
 
             setTimeout(() => {
-                window.location.href = 'index.html';
+                window.location.href = '../index.html';
             }, 1000);
         });
     }
@@ -176,7 +177,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 btn.textContent = 'Logging In...';
 
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = '../index.html';
                 }, 800);
             } else {
                 // Error
@@ -187,7 +188,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // Check Auth State (Global)
     checkAuthState();
-});
+}
+
+// Run when DOM is ready (script is at end of body so DOM may already be loaded)
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', initAuth);
+} else {
+    initAuth();
+}
 
 function checkAuthState() {
     const currentUser = JSON.parse(localStorage.getItem('watch4party_currentUser'));
