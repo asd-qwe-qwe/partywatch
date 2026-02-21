@@ -43,7 +43,7 @@
         <div class="room-main">
             <header class="room-topbar">
                 <div class="room-topbar-name" id="room-name-display">
-                    <code id="room-code-badge">------</code> <span id="room-name-text">Room</span>
+                    <span id="room-name-text">Room</span>
                 </div>
                 <div class="room-search-wrap">
                     <i class="fa-brands fa-youtube"></i>
@@ -438,9 +438,7 @@
             }
             window.roomCode = code;
             window.roomData = room;
-            var badge = document.getElementById('room-code-badge');
             var nameText = document.getElementById('room-name-text');
-            if (badge) badge.textContent = code;
             if (nameText) nameText.textContent = room.hostName ? room.hostName + "'s room" : 'Watch party';
             document.getElementById('room-invite-code').textContent = code;
 
