@@ -83,36 +83,17 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="profile-country">Country</label>
-                            <select id="profile-country" class="form-input form-select">
-                                <option value="">Select country</option>
-                                <option value="TR">Turkey</option>
-                                <option value="US">United States</option>
-                                <option value="GB">United Kingdom</option>
-                                <option value="DE">Germany</option>
-                                <option value="FR">France</option>
-                                <option value="NL">Netherlands</option>
-                                <option value="ES">Spain</option>
-                                <option value="IT">Italy</option>
-                                <option value="RU">Russia</option>
-                                <option value="CA">Canada</option>
-                                <option value="AU">Australia</option>
-                                <option value="BR">Brazil</option>
-                                <option value="JP">Japan</option>
-                                <option value="KR">South Korea</option>
-                                <option value="IN">India</option>
-                                <option value="CN">China</option>
-                                <option value="MX">Mexico</option>
-                                <option value="AR">Argentina</option>
-                                <option value="PL">Poland</option>
-                                <option value="SE">Sweden</option>
-                                <option value="NO">Norway</option>
-                                <option value="PT">Portugal</option>
-                                <option value="GR">Greece</option>
-                                <option value="AE">United Arab Emirates</option>
-                                <option value="SA">Saudi Arabia</option>
-                                <option value="EG">Egypt</option>
-                                <option value="ZA">South Africa</option>
-                            </select>
+                            <div class="country-dropdown" id="country-dropdown">
+                                <input type="hidden" name="profile-country" id="profile-country" value="">
+                                <button type="button" class="country-dropdown-trigger form-input" id="country-trigger" aria-expanded="false">
+                                    <span class="country-dropdown-label">Select country</span>
+                                    <i class="fa-solid fa-chevron-down"></i>
+                                </button>
+                                <div class="country-dropdown-panel" id="country-panel" role="listbox">
+                                    <div class="country-dropdown-header">Select country</div>
+                                    <div class="country-dropdown-list" id="country-list"></div>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     <div class="form-group">
@@ -176,8 +157,77 @@
             document.getElementById('profile-display-name').value = profileData.displayName || user.username;
             document.getElementById('profile-email').value = profileData.email || user.email || '';
             document.getElementById('profile-phone').value = profileData.phone || '';
-            document.getElementById('profile-country').value = profileData.country || '';
             document.getElementById('profile-bio').value = profileData.bio || '';
+
+            const countries = [
+                { value: '', label: 'Select country' },
+                { value: 'TR', label: 'Turkey' },
+                { value: 'US', label: 'United States' },
+                { value: 'GB', label: 'United Kingdom' },
+                { value: 'DE', label: 'Germany' },
+                { value: 'FR', label: 'France' },
+                { value: 'NL', label: 'Netherlands' },
+                { value: 'ES', label: 'Spain' },
+                { value: 'IT', label: 'Italy' },
+                { value: 'RU', label: 'Russia' },
+                { value: 'CA', label: 'Canada' },
+                { value: 'AU', label: 'Australia' },
+                { value: 'BR', label: 'Brazil' },
+                { value: 'JP', label: 'Japan' },
+                { value: 'KR', label: 'South Korea' },
+                { value: 'IN', label: 'India' },
+                { value: 'CN', label: 'China' },
+                { value: 'MX', label: 'Mexico' },
+                { value: 'AR', label: 'Argentina' },
+                { value: 'PL', label: 'Poland' },
+                { value: 'SE', label: 'Sweden' },
+                { value: 'NO', label: 'Norway' },
+                { value: 'PT', label: 'Portugal' },
+                { value: 'GR', label: 'Greece' },
+                { value: 'AE', label: 'United Arab Emirates' },
+                { value: 'SA', label: 'Saudi Arabia' },
+                { value: 'EG', label: 'Egypt' },
+                { value: 'ZA', label: 'South Africa' }
+            ];
+            const countryListEl = document.getElementById('country-list');
+            const countryTrigger = document.getElementById('country-trigger');
+            const countryPanel = document.getElementById('country-panel');
+            const countryLabel = document.querySelector('.country-dropdown-label');
+            const countryInput = document.getElementById('profile-country');
+            const countryWrap = document.getElementById('country-dropdown');
+            countries.forEach(function (c) {
+                const opt = document.createElement('div');
+                opt.className = 'country-dropdown-option';
+                opt.setAttribute('data-value', c.value);
+                opt.setAttribute('role', 'option');
+                opt.textContent = c.label;
+                countryListEl.appendChild(opt);
+            });
+            var selectedCountry = profileData.country || '';
+            var selectedLabel = (countries.find(function (c) { return c.value === selectedCountry; }) || {}).label || 'Select country';
+            countryInput.value = selectedCountry;
+            countryLabel.textContent = selectedLabel;
+            countryTrigger.addEventListener('click', function (e) {
+                e.stopPropagation();
+                var open = countryWrap.classList.toggle('open');
+                countryTrigger.setAttribute('aria-expanded', open);
+            });
+            countryListEl.querySelectorAll('.country-dropdown-option').forEach(function (opt) {
+                opt.addEventListener('click', function () {
+                    selectedCountry = this.getAttribute('data-value');
+                    selectedLabel = this.textContent;
+                    countryInput.value = selectedCountry;
+                    countryLabel.textContent = selectedLabel;
+                    countryWrap.classList.remove('open');
+                    countryTrigger.setAttribute('aria-expanded', 'false');
+                });
+            });
+            document.addEventListener('click', function () {
+                countryWrap.classList.remove('open');
+                countryTrigger.setAttribute('aria-expanded', 'false');
+            });
+            countryPanel.addEventListener('click', function (e) { e.stopPropagation(); });
+
             if (profileData.memberSince) document.getElementById('profile-member-since').textContent = 'Member since ' + profileData.memberSince;
 
             const stats = profileData.stats || {};
