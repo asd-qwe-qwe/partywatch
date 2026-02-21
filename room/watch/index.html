@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Watch Room - Watch4Party</title>
-    <link rel="icon" type="image/png" href="../../img/hero-logo.png">
+    <link rel="icon" type="image/png" href="../img/hero-logo.png">
     <link
         href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
         rel="stylesheet">
@@ -429,7 +429,8 @@
 
         function roomCopyInviteLink() {
             var base = window.location.pathname.replace(/\/watch\/?.*$/, '') || '/room';
-            var url = window.location.origin + base + (base.endsWith('/') ? '' : '/') + 'index.html?join=' + (window.roomCode || '');
+            var watchPath = base + (base.endsWith('/') ? '' : '/') + 'watch/';
+            var url = window.location.origin + watchPath + '?code=' + encodeURIComponent(window.roomCode || '');
             navigator.clipboard.writeText(url).then(function () { alert('Invite link copied!'); });
         }
 
