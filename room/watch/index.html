@@ -570,12 +570,17 @@
                 opt.addEventListener('click', function () {
                     bgOpts.forEach(function (o) { o.classList.remove('active'); });
                     opt.classList.add('active');
-                    try { if (code) localStorage.setItem(roomSettingsKey('room_bg_image'), opt.getAttribute('data-bg') || 'none'); } catch (_) {}
+                    var bgKey = opt.getAttribute('data-bg') || 'none';
+                    roomApplyBgImage(bgKey);
+                    try { if (code) localStorage.setItem(roomSettingsKey('room_bg_image'), bgKey); } catch (_) {}
                 });
             });
             try {
                 var savedBgImg = code && localStorage.getItem(roomSettingsKey('room_bg_image'));
-                if (savedBgImg) bgOpts.forEach(function (o) { if (o.getAttribute('data-bg') === savedBgImg) { bgOpts.forEach(function (x) { x.classList.remove('active'); }); o.classList.add('active'); } });
+                if (savedBgImg) {
+                    bgOpts.forEach(function (o) { if (o.getAttribute('data-bg') === savedBgImg) { bgOpts.forEach(function (x) { x.classList.remove('active'); }); o.classList.add('active'); } });
+                    roomApplyBgImage(savedBgImg);
+                }
             } catch (_) {}
 
             var uploadBtn = document.getElementById('room-settings-upload-bg');
@@ -611,6 +616,25 @@
         function roomApplyBgColor(hex) {
             var el = document.querySelector('.room-app-container');
             if (el) el.style.backgroundColor = hex || '';
+        }
+        function roomApplyBgImage(bgKey) {
+            var el = document.querySelector('.room-app-container');
+            if (!el) return;
+            el.style.backgroundImage = '';
+            if (bgKey === 'none') {
+                var hex = '';
+                try {
+                    if (window.roomCode) hex = localStorage.getItem(roomSettingsKey('room_bg_color'));
+                } catch (_) {}
+                if (!hex) hex = '#050505';
+                var colorInput = document.getElementById('room-settings-bg-color');
+                if (colorInput) colorInput.value = hex;
+                roomApplyBgColor(hex);
+                return;
+            }
+            var colors = { coral: '#e8a598', lavender: '#c4b5fd', light: '#f5f5f5' };
+            var hex = colors[bgKey] || '#050505';
+            roomApplyBgColor(hex);
         }
         function roomApplyChatColor(hex) {
             document.documentElement.style.setProperty('--room-chat-user-color', hex || 'var(--accent-red)');
@@ -684,8 +708,12 @@
 
             initRoomSettings();
             try {
-                var bg = localStorage.getItem(roomSettingsKey('room_bg_color'));
-                if (bg) roomApplyBgColor(bg);
+                var bgImg = localStorage.getItem(roomSettingsKey('room_bg_image'));
+                if (bgImg) roomApplyBgImage(bgImg);
+                else {
+                    var bg = localStorage.getItem(roomSettingsKey('room_bg_color'));
+                    if (bg) roomApplyBgColor(bg);
+                }
                 var cc = localStorage.getItem(roomSettingsPersonalKey('chat_color'));
                 if (cc) roomApplyChatColor(cc);
             } catch (_) {}
