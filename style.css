@@ -638,6 +638,41 @@ ul {
     background: rgba(255, 255, 255, 0.05);
 }
 
+/* Password strength indicator */
+.password-strength {
+    margin-top: 0.5rem;
+}
+.password-strength-track {
+    height: 4px;
+    border-radius: 2px;
+    background: rgba(255, 255, 255, 0.12);
+    overflow: hidden;
+}
+.password-strength-fill {
+    height: 100%;
+    width: 0%;
+    border-radius: 2px;
+    transition: width 0.2s ease, background-color 0.2s ease;
+}
+.password-strength-fill.weak {
+    background: #e50914;
+}
+.password-strength-fill.fair {
+    background: #f59e0b;
+}
+.password-strength-fill.good {
+    background: #eab308;
+}
+.password-strength-fill.strong {
+    background: #22c55e;
+}
+.password-strength-label {
+    display: block;
+    margin-top: 0.35rem;
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
 .auth-footer {
     margin-top: 2rem;
     font-size: 0.9rem;
