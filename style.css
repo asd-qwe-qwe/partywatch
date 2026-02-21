@@ -1786,28 +1786,24 @@ select.form-input {
     background: #000 !important;
     position: relative;
     flex-direction: column;
-    gap: 6px;
-}
-.room-platform-viewall-icon-symbol {
-    font-size: 1.5rem;
-    color: rgba(255,255,255,0.9);
-    line-height: 1;
-    flex-shrink: 0;
-}
-.room-platform-viewall-inner {
-    display: flex;
-    flex-direction: column;
     align-items: center;
     justify-content: center;
     gap: 4px;
-    width: 100%;
+}
+.room-platform-viewall-number {
+    font-size: 1.5rem;
+    font-weight: 800;
+    color: #fff;
+    line-height: 1;
+    letter-spacing: -0.03em;
 }
 .room-platform-viewall-label {
-    font-size: 0.8rem;
+    font-size: 0.7rem;
     font-weight: 600;
-    color: #fff;
+    color: rgba(255,255,255,0.85);
     text-align: center;
     line-height: 1.2;
+    text-transform: lowercase;
 }
 .room-platform-viewall-btn {
     background: var(--accent-red);
