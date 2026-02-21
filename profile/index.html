@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profile - Watch4Party Premium</title>
+    <title>My Profile - Watch4Party Premium</title>
     <link rel="canonical" href="https://watch4party.com/profile">
     <link rel="icon" type="image/png" href="../img/hero-logo.png">
     <link
@@ -14,50 +14,193 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 
-<body>
-    <div class="auth-container">
+<body class="profile-page">
+    <div id="profile-login-prompt" class="auth-container" style="display: none;">
         <div class="auth-card">
-            <h2 class="auth-title">Profile</h2>
-            <p class="auth-subtitle">Your account information</p>
-            <div id="profile-content">
-                <div class="form-group">
-                    <label class="form-label">Username</label>
-                    <p id="profile-username" class="form-input" style="background: rgba(255,255,255,0.05); cursor: default;"></p>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Email</label>
-                    <p id="profile-email" class="form-input" style="background: rgba(255,255,255,0.05); cursor: default;"></p>
-                </div>
-            </div>
-            <div id="profile-login-prompt" style="display: none; text-align: center; margin: 1.5rem 0;">
-                <p style="color: var(--text-secondary); margin-bottom: 1rem;">You need to be logged in to view your profile.</p>
-                <a href="../login/" class="btn btn-primary">Sign In</a>
-            </div>
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">You need to be logged in to view your profile.</p>
+            <a href="../login/" class="btn btn-primary">Sign In</a>
             <div class="auth-footer" style="margin-top: 2rem;">
                 <a href="../" style="color: var(--text-secondary); font-size: 0.8rem;"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
             </div>
         </div>
     </div>
+
+    <div id="profile-app" class="profile-app">
+        <header class="profile-header">
+            <a href="../" class="profile-back"><i class="fa-solid fa-arrow-left"></i> Back</a>
+            <h1 class="profile-title">My Profile</h1>
+            <span></span>
+        </header>
+
+        <main class="profile-main container">
+            <section class="profile-hero">
+                <div class="profile-hero-avatar" id="profile-avatar">1</div>
+                <div class="profile-hero-info">
+                    <h2 class="profile-hero-name" id="profile-username">—</h2>
+                    <p class="profile-hero-badge"><i class="fa-solid fa-crown"></i> Premium Member</p>
+                    <p class="profile-hero-date" id="profile-member-since">Member since 2026</p>
+                </div>
+            </section>
+
+            <section class="profile-stats">
+                <div class="profile-stat-card">
+                    <i class="fa-solid fa-film"></i>
+                    <span class="profile-stat-value" id="stat-movies">0</span>
+                    <span class="profile-stat-label">Movies Watched</span>
+                </div>
+                <div class="profile-stat-card">
+                    <i class="fa-solid fa-tv"></i>
+                    <span class="profile-stat-value" id="stat-series">0</span>
+                    <span class="profile-stat-label">Series Watched</span>
+                </div>
+                <div class="profile-stat-card">
+                    <i class="fa-solid fa-clock"></i>
+                    <span class="profile-stat-value" id="stat-time">0h</span>
+                    <span class="profile-stat-label">Watch Time</span>
+                </div>
+                <div class="profile-stat-card">
+                    <i class="fa-solid fa-bookmark"></i>
+                    <span class="profile-stat-value" id="stat-watchlist">0</span>
+                    <span class="profile-stat-label">Watchlist</span>
+                </div>
+            </section>
+
+            <section class="profile-card profile-edit-section">
+                <label class="profile-edit-toggle">
+                    <input type="checkbox" id="edit-profile-checkbox">
+                    <span class="profile-edit-toggle-text">Edit Profile</span>
+                </label>
+                <form id="profile-form" class="profile-form">
+                    <div class="profile-form-grid">
+                        <div class="form-group">
+                            <label class="form-label" for="profile-display-name">Display Name</label>
+                            <input type="text" id="profile-display-name" class="form-input" placeholder="Your name">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profile-email">Email</label>
+                            <input type="email" id="profile-email" class="form-input" placeholder="email@example.com">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profile-phone">Phone</label>
+                            <input type="tel" id="profile-phone" class="form-input" placeholder="+1 (555) 000-0000">
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label" for="profile-country">Country</label>
+                            <select id="profile-country" class="form-input">
+                                <option value="">Select country</option>
+                                <option value="TR">Turkey</option>
+                                <option value="US">United States</option>
+                                <option value="GB">United Kingdom</option>
+                                <option value="DE">Germany</option>
+                                <option value="FR">France</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label" for="profile-bio">Bio</label>
+                        <textarea id="profile-bio" class="form-input form-textarea" rows="4" placeholder="Tell us about yourself..."></textarea>
+                    </div>
+                    <button type="submit" class="btn btn-primary profile-save-btn"><i class="fa-solid fa-check"></i> Save Changes</button>
+                </form>
+            </section>
+
+            <section class="profile-card">
+                <h3 class="profile-card-title"><i class="fa-solid fa-globe"></i> Favorite Genres</h3>
+                <div class="profile-genres" id="profile-genres">
+                    <button type="button" class="profile-genre-tag" data-genre="sci-fi">Sci-Fi</button>
+                    <button type="button" class="profile-genre-tag" data-genre="action">Action</button>
+                    <button type="button" class="profile-genre-tag" data-genre="comedy">Comedy</button>
+                    <button type="button" class="profile-genre-tag" data-genre="thriller">Thriller</button>
+                    <button type="button" class="profile-genre-tag" data-genre="romance">Romance</button>
+                    <button type="button" class="profile-genre-tag" data-genre="horror">Horror</button>
+                    <button type="button" class="profile-genre-tag" data-genre="drama">Drama</button>
+                    <button type="button" class="profile-genre-tag" data-genre="documentary">Documentary</button>
+                    <button type="button" class="profile-genre-tag" data-genre="animation">Animation</button>
+                    <button type="button" class="profile-genre-tag" data-genre="fantasy">Fantasy</button>
+                </div>
+            </section>
+
+            <section class="profile-card">
+                <h3 class="profile-card-title"><i class="fa-solid fa-clock-rotate-left"></i> Recently Watched</h3>
+                <div class="profile-recent-empty" id="profile-recent-empty">
+                    <i class="fa-solid fa-film"></i>
+                    <p>You haven't watched anything yet. Start exploring movies and series!</p>
+                </div>
+            </section>
+        </main>
+    </div>
+
     <script>
         (function () {
             let user = null;
             try {
                 user = JSON.parse(localStorage.getItem('watch4party_currentUser'));
             } catch (_) {}
-            const content = document.getElementById('profile-content');
-            const prompt = document.getElementById('profile-login-prompt');
-            if (user && user.username) {
-                if (content) {
-                    var el = document.getElementById('profile-username');
-                    if (el) el.textContent = user.username;
-                    el = document.getElementById('profile-email');
-                    if (el) el.textContent = user.email || '—';
-                }
-                if (prompt) prompt.style.display = 'none';
-            } else {
-                if (content) content.style.display = 'none';
-                if (prompt) prompt.style.display = 'block';
+            const PROFILE_KEY = 'watch4party_profile';
+            let profileData = {};
+            try {
+                profileData = JSON.parse(localStorage.getItem(PROFILE_KEY) || '{}');
+            } catch (_) {}
+
+            const loginPrompt = document.getElementById('profile-login-prompt');
+            const app = document.getElementById('profile-app');
+            if (!user || !user.username) {
+                if (loginPrompt) loginPrompt.style.display = 'flex';
+                if (app) app.style.display = 'none';
+                return;
             }
+            if (loginPrompt) loginPrompt.style.display = 'none';
+            if (app) app.style.display = 'block';
+
+            document.getElementById('profile-username').textContent = user.username;
+            document.getElementById('profile-avatar').textContent = (user.username || '').charAt(0).toUpperCase() || '?';
+            document.getElementById('profile-display-name').value = profileData.displayName || user.username;
+            document.getElementById('profile-email').value = profileData.email || user.email || '';
+            document.getElementById('profile-phone').value = profileData.phone || '';
+            document.getElementById('profile-country').value = profileData.country || '';
+            document.getElementById('profile-bio').value = profileData.bio || '';
+            if (profileData.memberSince) document.getElementById('profile-member-since').textContent = 'Member since ' + profileData.memberSince;
+
+            const stats = profileData.stats || {};
+            document.getElementById('stat-movies').textContent = stats.movies ?? 0;
+            document.getElementById('stat-series').textContent = stats.series ?? 0;
+            document.getElementById('stat-time').textContent = (stats.watchTimeHours ?? 0) + 'h';
+            document.getElementById('stat-watchlist').textContent = stats.watchlist ?? 0;
+
+            const genres = document.querySelectorAll('.profile-genre-tag');
+            const savedGenres = profileData.favoriteGenres || [];
+            genres.forEach(tag => {
+                if (savedGenres.includes(tag.dataset.genre)) tag.classList.add('selected');
+                tag.addEventListener('click', function () {
+                    this.classList.toggle('selected');
+                    const selected = Array.from(document.querySelectorAll('.profile-genre-tag.selected')).map(t => t.dataset.genre);
+                    profileData.favoriteGenres = selected;
+                    localStorage.setItem(PROFILE_KEY, JSON.stringify(profileData));
+                });
+            });
+
+            document.getElementById('edit-profile-checkbox').addEventListener('change', function () {
+                const form = document.getElementById('profile-form');
+                form.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = !this.checked; });
+                form.querySelector('.profile-save-btn').style.display = this.checked ? 'inline-flex' : 'none';
+            });
+            document.getElementById('profile-form').querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+            document.querySelector('.profile-save-btn').style.display = 'none';
+
+            document.getElementById('profile-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                profileData.displayName = document.getElementById('profile-display-name').value;
+                profileData.email = document.getElementById('profile-email').value;
+                profileData.phone = document.getElementById('profile-phone').value;
+                profileData.country = document.getElementById('profile-country').value;
+                profileData.bio = document.getElementById('profile-bio').value;
+                localStorage.setItem(PROFILE_KEY, JSON.stringify(profileData));
+                document.getElementById('profile-username').textContent = profileData.displayName || user.username;
+                document.getElementById('profile-avatar').textContent = (profileData.displayName || user.username).charAt(0).toUpperCase();
+                document.getElementById('edit-profile-checkbox').checked = false;
+                document.getElementById('profile-form').querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
+                document.querySelector('.profile-save-btn').style.display = 'none';
+            });
         })();
     </script>
 </body>
