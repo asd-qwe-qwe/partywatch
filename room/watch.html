@@ -11,142 +11,361 @@
         rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="../style.css">
-    <style>
-        .watch-container { max-width: 720px; margin: 0 auto; padding: 2rem; }
-        .watch-room-header { margin-bottom: 1.5rem; }
-        .watch-room-badge {
-            display: inline-block;
-            font-family: var(--font-heading);
-            font-size: 1rem;
-            font-weight: 700;
-            letter-spacing: 0.2em;
-            color: var(--accent-red);
-            margin-bottom: 0.5rem;
-        }
-        .watch-placeholder {
-            background: rgba(0,0,0,0.4);
-            border: 2px dashed var(--card-border);
-            border-radius: 16px;
-            padding: 3rem 2rem;
-            text-align: center;
-            color: var(--text-secondary);
-            margin: 1.5rem 0;
-        }
-        .watch-placeholder i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.6; }
-        .watch-participants { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
-        .watch-participant {
-            display: flex; align-items: center; gap: 0.5rem;
-            padding: 0.4rem 0.75rem; background: var(--bg-glass);
-            border-radius: 999px; font-size: 0.9rem;
-        }
-        .watch-participant img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
-    </style>
 </head>
 
-<body>
-    <div class="auth-container" style="align-items: flex-start; padding-top: 3rem;">
-        <div class="watch-container">
-            <div class="watch-room-header">
-                <div class="watch-room-badge" id="room-badge">ROOM -----</div>
-                <h2 class="auth-title">Watching together</h2>
+<body class="body-room-app">
+    <div class="room-app-container" id="room-app">
+        <aside class="room-sidebar">
+            <div class="room-sidebar-icon" title="Invite" onclick="roomShowInvite()">
+                <i class="fa-solid fa-user-plus"></i>
             </div>
+            <div class="room-sidebar-icon" title="Settings" onclick="roomShowSettings()">
+                <i class="fa-solid fa-gear"></i>
+            </div>
+            <div class="room-sidebar-spacer"></div>
+            <div class="room-sidebar-icon" title="Help" onclick="roomShowHelp()">
+                <i class="fa-solid fa-question"></i>
+            </div>
+            <div class="room-sidebar-icon" id="room-btn-cam" title="Camera" onclick="roomToggleCamera()">
+                <i class="fa-solid fa-camera"></i>
+            </div>
+            <div class="room-sidebar-icon" id="room-btn-mic" title="Microphone" onclick="roomToggleMic()">
+                <i class="fa-solid fa-microphone"></i>
+            </div>
+            <div class="room-sidebar-avatar" title="You">
+                <i class="fa-solid fa-user"></i>
+            </div>
+        </aside>
 
-            <div id="watch-content" style="display: none;">
-                <div class="watch-placeholder">
-                    <i class="fa-solid fa-film"></i>
-                    <p>Synced playback is available in the Watch4Party desktop app.</p>
-                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Use the same room code in the app to stay in sync with your party.</p>
-                    <a href="https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1" class="btn btn-primary" style="margin-top: 1rem;">
-                        <i class="fa-brands fa-windows" style="margin-right: 8px;"></i> Download desktop app
-                    </a>
+        <div class="room-main">
+            <header class="room-topbar">
+                <div class="room-topbar-name" id="room-name-display">
+                    <code id="room-code-badge">------</code> <span id="room-name-text">Room</span>
                 </div>
-                <h4 style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 1.5rem;">In this room</h4>
-                <div class="watch-participants" id="watch-participants"></div>
-            </div>
+                <div class="room-search-wrap">
+                    <i class="fa-brands fa-youtube"></i>
+                    <input type="text" class="room-search-input" id="room-search-input"
+                        placeholder="Paste YouTube link or search...">
+                    <i class="fa-solid fa-magnifying-glass" id="room-search-btn"></i>
+                </div>
+                <video id="room-local-preview" autoplay playsinline muted
+                    style="width:90px;height:54px;background:#000;border-radius:8px;display:none;object-fit:cover;"></video>
+            </header>
 
-            <div id="watch-error" style="display: none;">
-                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Room not found.</p>
-                <a href="index.html" class="btn btn-primary">Back to room</a>
+            <div class="room-player-area">
+                <div class="room-video-container" id="room-video-container">
+                    <div id="room-player-placeholder" class="room-video-placeholder">
+                        <i class="fa-brands fa-youtube"></i>
+                        <p>Paste a YouTube link or search to start watching</p>
+                    </div>
+                </div>
+                <div class="room-video-grid" id="room-video-grid">
+                    <div class="room-video-card" data-video-id="dQw4w9WgXcQ">
+                        <div class="room-video-card-thumb" style="background-image:url('https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg')"></div>
+                        <div class="room-video-card-info"><div class="room-video-card-title">Sample</div></div>
+                    </div>
+                    <div class="room-video-card" data-video-id="LXb3EKWsInQ">
+                        <div class="room-video-card-thumb" style="background-image:url('https://img.youtube.com/vi/LXb3EKWsInQ/mqdefault.jpg')"></div>
+                        <div class="room-video-card-info"><div class="room-video-card-title">Nature</div></div>
+                    </div>
+                    <div class="room-video-card" data-video-id="q76bMs-NwRk">
+                        <div class="room-video-card-thumb" style="background-image:url('https://img.youtube.com/vi/q76bMs-NwRk/mqdefault.jpg')"></div>
+                        <div class="room-video-card-info"><div class="room-video-card-title">Rain</div></div>
+                    </div>
+                    <div class="room-video-card" data-video-id="M5QY2_8704o">
+                        <div class="room-video-card-thumb" style="background-image:url('https://img.youtube.com/vi/M5QY2_8704o/mqdefault.jpg')"></div>
+                        <div class="room-video-card-info"><div class="room-video-card-title">Study</div></div>
+                    </div>
+                </div>
             </div>
+        </div>
 
-            <div class="auth-footer" style="margin-top: 2rem;">
-                <a href="lobby.html" id="back-to-lobby" style="color: var(--text-secondary); font-size: 0.8rem;">
-                    <i class="fa-solid fa-arrow-left"></i> Back to lobby
-                </a>
+        <aside class="room-right-panel">
+            <div class="room-tabs">
+                <div class="room-tab active" data-tab="playlist">Playlist</div>
+                <div class="room-tab" data-tab="history">History</div>
             </div>
+            <div id="room-playlist-view" class="room-tab-content">
+                <div class="room-empty-state">
+                    <i class="fa-solid fa-list"></i>
+                    <p>Playlist is empty</p>
+                </div>
+            </div>
+            <div id="room-history-view" class="room-tab-content hidden">
+                <div class="room-empty-state">
+                    <i class="fa-solid fa-clock-rotate-left"></i>
+                    <p>No history yet</p>
+                </div>
+            </div>
+        </aside>
+    </div>
+
+    <div id="room-chat-overlay" class="room-chat-overlay hidden">
+        <div class="room-chat-header">
+            <span>Chat</span>
+            <i class="fa-solid fa-xmark" onclick="roomToggleChat()"></i>
+        </div>
+        <div class="room-chat-messages" id="room-chat-messages">
+            <div class="room-chat-msg">
+                <span class="time">--:--</span><span class="user">System:</span> Welcome to the room!
+            </div>
+        </div>
+        <div class="room-chat-input-row">
+            <input type="text" class="room-chat-input" id="room-chat-input" placeholder="Send a message...">
+            <button type="button" class="room-chat-send" onclick="roomSendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+        </div>
+    </div>
+    <div class="room-floating-chat-btn" id="room-floating-chat-btn" onclick="roomToggleChat()">
+        <i class="fa-solid fa-comment-dots"></i>
+    </div>
+
+    <!-- Invite Modal -->
+    <div id="room-invite-modal" class="room-modal-overlay hidden">
+        <div class="room-modal">
+            <span class="room-modal-close" onclick="roomHideModals()">&times;</span>
+            <h2><i class="fa-solid fa-link" style="color:var(--accent-red);"></i> Invite friends</h2>
+            <p>Share this link so others can join the room. They need the room code: <strong id="room-invite-code">------</strong></p>
+            <button type="button" class="btn btn-primary" onclick="roomCopyInviteLink()"><i class="fa-regular fa-copy" style="margin-right:8px;"></i> Copy invite link</button>
+        </div>
+    </div>
+    <!-- Settings Modal -->
+    <div id="room-settings-modal" class="room-modal-overlay hidden">
+        <div class="room-modal large">
+            <span class="room-modal-close" onclick="roomHideModals()">&times;</span>
+            <h2>Room settings</h2>
+            <p>Room code cannot be changed. Use the invite link to share.</p>
+            <a href="lobby.html" id="room-back-to-lobby" class="room-download-link"><i class="fa-solid fa-arrow-left"></i> Back to lobby</a>
+        </div>
+    </div>
+    <!-- Help Modal -->
+    <div id="room-help-modal" class="room-modal-overlay hidden">
+        <div class="room-modal large">
+            <span class="room-modal-close" onclick="roomHideModals()">&times;</span>
+            <h2>How to use Watch4Party</h2>
+            <p>Paste a YouTube link in the search bar or click a suggestion. For synced playback across devices, use the desktop app.</p>
+            <p><strong>Shortcuts:</strong> Enter = search, Space = play/pause (when player focused)</p>
+            <a href="https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1" class="room-download-link" target="_blank" rel="noopener"><i class="fa-brands fa-windows"></i> Download desktop app</a>
+        </div>
+    </div>
+
+    <!-- Error state: no room -->
+    <div id="room-error-screen" class="auth-container" style="display:none;">
+        <div class="auth-card">
+            <h2 class="auth-title">Room not found</h2>
+            <p class="auth-subtitle">This room doesn't exist or has expired.</p>
+            <a href="index.html" class="btn btn-primary">Back to room</a>
         </div>
     </div>
 
     <script>
-        (function () {
-            const STORAGE_KEY = 'watch4party_rooms';
+    (function () {
+        var STORAGE_KEY = 'watch4party_rooms';
+        var DOWNLOAD_URL = 'https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1';
 
-            function getRooms() {
-                try {
-                    var raw = localStorage.getItem(STORAGE_KEY);
-                    return raw ? JSON.parse(raw) : {};
-                } catch (_) { return {}; }
+        function getRooms() {
+            try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (_) { return {}; }
+        }
+        function getCode() {
+            var p = new URLSearchParams(window.location.search);
+            return (p.get('code') || '').trim().toUpperCase();
+        }
+
+        window.roomCode = null;
+        window.roomData = null;
+        window.roomYtPlayer = null;
+        window.roomPendingVideoId = null;
+        window.roomLocalStream = null;
+
+        window.onYouTubeIframeAPIReady = function () {
+            if (window.roomPendingVideoId) {
+                roomLoadVideo(window.roomPendingVideoId);
+                window.roomPendingVideoId = null;
             }
+        };
 
-            function getCodeFromUrl() {
-                var params = new URLSearchParams(window.location.search);
-                return (params.get('code') || '').trim().toUpperCase();
+        function roomLoadVideo(videoId) {
+            var container = document.getElementById('room-video-container');
+            var placeholder = document.getElementById('room-player-placeholder');
+            if (!container) return;
+
+            if (window.roomYtPlayer && typeof window.roomYtPlayer.loadVideoById === 'function') {
+                window.roomYtPlayer.loadVideoById(videoId);
+                roomAddToPlaylist(videoId);
+                return;
             }
-
-            function initWatch() {
-                var code = getCodeFromUrl();
-                var roomBadge = document.getElementById('room-badge');
-                var watchContent = document.getElementById('watch-content');
-                var watchError = document.getElementById('watch-error');
-                var watchParticipants = document.getElementById('watch-participants');
-                var backToLobby = document.getElementById('back-to-lobby');
-
-                if (roomBadge) roomBadge.textContent = 'ROOM ' + (code || '------');
-
-                if (backToLobby && code) {
-                    backToLobby.href = 'lobby.html?code=' + encodeURIComponent(code);
-                }
-
-                if (!code || code.length !== 6) {
-                    if (watchContent) watchContent.style.display = 'none';
-                    if (watchError) watchError.style.display = 'block';
-                    return;
-                }
-
-                var rooms = getRooms();
-                var room = rooms[code];
-
-                if (!room || !room.members) {
-                    if (watchContent) watchContent.style.display = 'none';
-                    if (watchError) watchError.style.display = 'block';
-                    return;
-                }
-
-                if (watchError) watchError.style.display = 'none';
-                if (watchContent) watchContent.style.display = 'block';
-
-                if (watchParticipants) {
-                    (room.members || []).forEach(function (m) {
-                        var div = document.createElement('div');
-                        div.className = 'watch-participant';
-                        var img = document.createElement('img');
-                        img.src = 'https://api.dicebear.com/9.x/avataaars/svg?seed=' + (m.avatar || 'Felix');
-                        img.alt = m.name;
-                        var span = document.createElement('span');
-                        span.textContent = m.name + (m.isHost ? ' (Host)' : '');
-                        div.appendChild(img);
-                        div.appendChild(span);
-                        watchParticipants.appendChild(div);
-                    });
-                }
+            if (window.YT && window.YT.Player) {
+                if (placeholder) placeholder.style.display = 'none';
+                container.innerHTML = '<div id="room-yt-player"></div>';
+                roomAddToPlaylist(videoId);
+                window.roomYtPlayer = new YT.Player('room-yt-player', {
+                    height: '100%',
+                    width: '100%',
+                    videoId: videoId,
+                    playerVars: { playsinline: 1, autoplay: 1, rel: 0, modestbranding: 1 },
+                    events: { onReady: function (e) { e.target.playVideo(); }, onError: function (e) { console.warn('YT error', e.data); } }
+                });
+                return;
             }
+            window.roomPendingVideoId = videoId;
+            if (placeholder) placeholder.innerHTML = '<p>Loading player...</p>';
+            var tag = document.createElement('script');
+            tag.src = 'https://www.youtube.com/iframe_api';
+            document.body.appendChild(tag);
+        }
 
-            if (document.readyState === 'loading') {
-                document.addEventListener('DOMContentLoaded', initWatch);
-            } else {
-                initWatch();
+        function roomAddToPlaylist(videoId) {
+            var view = document.getElementById('room-playlist-view');
+            if (!view) return;
+            var empty = view.querySelector('.room-empty-state');
+            if (empty) empty.remove();
+            var existing = view.querySelector('[data-video-id="' + videoId + '"]');
+            if (existing) return;
+            var div = document.createElement('div');
+            div.className = 'room-playlist-item';
+            div.dataset.videoId = videoId;
+            div.innerHTML = '<div class="room-playlist-item-thumb" style="background-image:url(https://img.youtube.com/vi/' + videoId + '/mqdefault.jpg)"></div><div>Video ' + videoId + '</div>';
+            div.onclick = function () { roomLoadVideo(videoId); };
+            view.insertBefore(div, view.firstChild);
+        }
+
+        function roomHandleSearch(query) {
+            query = (query || '').trim();
+            if (!query) return;
+            var ytMatch = query.match(/(?:youtube\.com\/(?:[^\/]+\/.+\/|(?:v|e(?:mbed)?)\/|.*[?&]v=)|youtu\.be\/)([^"&?\/\s]{11})/i);
+            if (ytMatch && ytMatch[1]) {
+                roomLoadVideo(ytMatch[1]);
+                return;
             }
-        })();
+            var mock = { funny: 'dQw4w9WgXcQ', cat: 'LXb3EKWsInQ', music: 'q76bMs-NwRk', lofi: 'q76bMs-NwRk', relax: 'LXb3EKWsInQ', study: 'M5QY2_8704o', game: 'dQw4w9WgXcQ', nature: 'LXb3EKWsInQ', rain: 'q76bMs-NwRk' };
+            var q = query.toLowerCase();
+            for (var k in mock) { if (q.indexOf(k) !== -1) { roomLoadVideo(mock[k]); return; } }
+            roomLoadVideo('dQw4w9WgXcQ');
+        }
+
+        function roomEscapeHtml(t) {
+            var m = { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#039;' };
+            return (t || '').replace(/[&<>"']/g, function (c) { return m[c] || c; });
+        }
+
+        function roomToggleChat() {
+            var overlay = document.getElementById('room-chat-overlay');
+            var btn = document.getElementById('room-floating-chat-btn');
+            if (overlay && overlay.classList) {
+                overlay.classList.toggle('hidden');
+                if (btn) btn.classList.toggle('hidden', !overlay.classList.contains('hidden'));
+            }
+        }
+
+        function roomSendMessage() {
+            var input = document.getElementById('room-chat-input');
+            var list = document.getElementById('room-chat-messages');
+            var text = (input && input.value || '').trim();
+            if (!text || !list) return;
+            var now = new Date();
+            var time = (now.getHours() < 10 ? '0' : '') + now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+            var div = document.createElement('div');
+            div.className = 'room-chat-msg';
+            div.innerHTML = '<span class="time">[' + time + ']</span><span class="user">You:</span> ' + roomEscapeHtml(text);
+            list.appendChild(div);
+            list.scrollTop = list.scrollHeight;
+            input.value = '';
+        }
+
+        function roomShowInvite() {
+            document.getElementById('room-invite-modal').classList.remove('hidden');
+            var codeEl = document.getElementById('room-invite-code');
+            if (codeEl && window.roomCode) codeEl.textContent = window.roomCode;
+        }
+        function roomShowSettings() {
+            document.getElementById('room-settings-modal').classList.remove('hidden');
+            var a = document.getElementById('room-back-to-lobby');
+            if (a && window.roomCode) a.href = 'lobby.html?code=' + encodeURIComponent(window.roomCode);
+        }
+        function roomShowHelp() { document.getElementById('room-help-modal').classList.remove('hidden'); }
+        function roomHideModals() {
+            document.querySelectorAll('.room-modal-overlay').forEach(function (el) { el.classList.add('hidden'); });
+        }
+
+        async function roomToggleCamera() {
+            var video = document.getElementById('room-local-preview');
+            var btn = document.getElementById('room-btn-cam');
+            if (window.roomLocalStream && window.roomLocalStream.getVideoTracks().length && window.roomLocalStream.getVideoTracks()[0].enabled) {
+                window.roomLocalStream.getVideoTracks()[0].stop();
+                if (video) video.style.display = 'none';
+                if (btn) btn.classList.remove('active');
+                return;
+            }
+            try {
+                window.roomLocalStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
+                if (video) { video.srcObject = window.roomLocalStream; video.style.display = 'block'; }
+                if (btn) btn.classList.add('active');
+            } catch (e) { alert('Camera access denied'); }
+        }
+        async function roomToggleMic() {
+            var btn = document.getElementById('room-btn-mic');
+            try {
+                await navigator.mediaDevices.getUserMedia({ audio: true });
+                if (btn) btn.classList.toggle('active');
+            } catch (e) { alert('Microphone access denied'); }
+        }
+
+        function roomCopyInviteLink() {
+            var base = window.location.pathname.replace(/watch\.html.*$/, '');
+            var url = window.location.origin + (base.endsWith('/') ? base : base + '/') + 'index.html?join=' + (window.roomCode || '');
+            navigator.clipboard.writeText(url).then(function () { alert('Invite link copied!'); });
+        }
+
+        function init() {
+            var code = getCode();
+            if (!code || code.length !== 6) {
+                document.getElementById('room-app').style.display = 'none';
+                document.getElementById('room-error-screen').style.display = 'flex';
+                return;
+            }
+            var rooms = getRooms();
+            var room = rooms[code];
+            if (!room || !room.members) {
+                document.getElementById('room-app').style.display = 'none';
+                document.getElementById('room-error-screen').style.display = 'flex';
+                return;
+            }
+            window.roomCode = code;
+            window.roomData = room;
+            var badge = document.getElementById('room-code-badge');
+            var nameText = document.getElementById('room-name-text');
+            if (badge) badge.textContent = code;
+            if (nameText) nameText.textContent = room.hostName ? room.hostName + "'s room" : 'Watch party';
+            document.getElementById('room-invite-code').textContent = code;
+
+            document.querySelectorAll('.room-tab').forEach(function (tab) {
+                tab.addEventListener('click', function () {
+                    document.querySelectorAll('.room-tab').forEach(function (t) { t.classList.remove('active'); });
+                    document.querySelectorAll('.room-tab-content').forEach(function (c) { c.classList.add('hidden'); });
+                    tab.classList.add('active');
+                    var id = tab.getAttribute('data-tab');
+                    document.getElementById('room-' + id + '-view').classList.remove('hidden');
+                });
+            });
+
+            var searchInput = document.getElementById('room-search-input');
+            var searchBtn = document.getElementById('room-search-btn');
+            function doSearch() { roomHandleSearch(searchInput && searchInput.value); }
+            if (searchInput) searchInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') doSearch(); });
+            if (searchBtn) searchBtn.addEventListener('click', doSearch);
+
+            document.getElementById('room-chat-input').addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') roomSendMessage();
+            });
+
+            document.querySelectorAll('.room-video-card').forEach(function (card) {
+                var id = card.getAttribute('data-video-id');
+                if (id) card.addEventListener('click', function () { roomLoadVideo(id); });
+            });
+        }
+
+        if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
+        else init();
+    })();
     </script>
 </body>
 
