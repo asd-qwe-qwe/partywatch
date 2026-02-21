@@ -203,12 +203,24 @@
     </div>
     <!-- Help Modal -->
     <div id="room-help-modal" class="room-modal-overlay hidden">
-        <div class="room-modal large">
+        <div class="room-modal large room-help-modal">
             <span class="room-modal-close" onclick="roomHideModals()" aria-label="Close">&times;</span>
-            <div class="room-modal-content">
+            <div class="room-modal-content room-help-content">
                 <h2>How to use Watch4Party</h2>
-                <p>Paste a YouTube link in the search bar or click a suggestion. For synced playback across devices, use the desktop app.</p>
-                <p><strong>Shortcuts:</strong> Enter = search, Space = play/pause (when player focused)</p>
+                <p class="room-help-intro">Watch4Party lets you watch videos with your friends, synchronized at the same time.</p>
+                <ol class="room-help-steps">
+                    <li><strong>Create a Room</strong> — Create a room for free. No registration required!</li>
+                    <li><strong>Share the Link</strong> — Share the link with your friends (Email, Facebook, Twitter, etc.).</li>
+                    <li><strong>Watch together</strong> — Enjoy videos and music together.</li>
+                </ol>
+                <h3 class="room-help-subtitle">Keyboard Shortcuts</h3>
+                <ul class="room-help-shortcuts">
+                    <li><kbd>Space</kbd> Play / Pause</li>
+                    <li><kbd>F</kbd> Fullscreen</li>
+                    <li><kbd>Enter</kbd> Search</li>
+                    <li><kbd>C</kbd> Chat</li>
+                    <li><kbd>Esc</kbd> Close dialogs</li>
+                </ul>
                 <a href="#" class="room-download-link watch4party-download-link" target="_blank" rel="noopener"><i class="fa-brands fa-windows"></i> Download desktop app</a>
             </div>
         </div>
