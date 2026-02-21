@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Watch Room - Watch4Party</title>
+    <link rel="icon" type="image/png" href="../img/hero-logo.png">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Outfit:wght@500;700;800&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../style.css">
+    <style>
+        .watch-container { max-width: 720px; margin: 0 auto; padding: 2rem; }
+        .watch-room-header { margin-bottom: 1.5rem; }
+        .watch-room-badge {
+            display: inline-block;
+            font-family: var(--font-heading);
+            font-size: 1rem;
+            font-weight: 700;
+            letter-spacing: 0.2em;
+            color: var(--accent-red);
+            margin-bottom: 0.5rem;
+        }
+        .watch-placeholder {
+            background: rgba(0,0,0,0.4);
+            border: 2px dashed var(--card-border);
+            border-radius: 16px;
+            padding: 3rem 2rem;
+            text-align: center;
+            color: var(--text-secondary);
+            margin: 1.5rem 0;
+        }
+        .watch-placeholder i { font-size: 3rem; margin-bottom: 1rem; opacity: 0.6; }
+        .watch-participants { display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem; }
+        .watch-participant {
+            display: flex; align-items: center; gap: 0.5rem;
+            padding: 0.4rem 0.75rem; background: var(--bg-glass);
+            border-radius: 999px; font-size: 0.9rem;
+        }
+        .watch-participant img { width: 28px; height: 28px; border-radius: 50%; object-fit: cover; }
+    </style>
+</head>
+
+<body>
+    <div class="auth-container" style="align-items: flex-start; padding-top: 3rem;">
+        <div class="watch-container">
+            <div class="watch-room-header">
+                <div class="watch-room-badge" id="room-badge">ROOM -----</div>
+                <h2 class="auth-title">Watching together</h2>
+            </div>
+
+            <div id="watch-content" style="display: none;">
+                <div class="watch-placeholder">
+                    <i class="fa-solid fa-film"></i>
+                    <p>Synced playback is available in the Watch4Party desktop app.</p>
+                    <p style="font-size: 0.85rem; margin-top: 0.5rem;">Use the same room code in the app to stay in sync with your party.</p>
+                    <a href="https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1" class="btn btn-primary" style="margin-top: 1rem;">
+                        <i class="fa-brands fa-windows" style="margin-right: 8px;"></i> Download desktop app
+                    </a>
+                </div>
+                <h4 style="font-size: 0.95rem; color: var(--text-secondary); margin-top: 1.5rem;">In this room</h4>
+                <div class="watch-participants" id="watch-participants"></div>
+            </div>
+
+            <div id="watch-error" style="display: none;">
+                <p style="color: var(--text-secondary); margin-bottom: 1rem;">Room not found.</p>
+                <a href="index.html" class="btn btn-primary">Back to room</a>
+            </div>
+
+            <div class="auth-footer" style="margin-top: 2rem;">
+                <a href="lobby.html" id="back-to-lobby" style="color: var(--text-secondary); font-size: 0.8rem;">
+                    <i class="fa-solid fa-arrow-left"></i> Back to lobby
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        (function () {
+            const STORAGE_KEY = 'watch4party_rooms';
+
+            function getRooms() {
+                try {
+                    var raw = localStorage.getItem(STORAGE_KEY);
+                    return raw ? JSON.parse(raw) : {};
+                } catch (_) { return {}; }
+            }
+
+            function getCodeFromUrl() {
+                var params = new URLSearchParams(window.location.search);
+                return (params.get('code') || '').trim().toUpperCase();
+            }
+
+            function initWatch() {
+                var code = getCodeFromUrl();
+                var roomBadge = document.getElementById('room-badge');
+                var watchContent = document.getElementById('watch-content');
+                var watchError = document.getElementById('watch-error');
+                var watchParticipants = document.getElementById('watch-participants');
+                var backToLobby = document.getElementById('back-to-lobby');
+
+                if (roomBadge) roomBadge.textContent = 'ROOM ' + (code || '------');
+
+                if (backToLobby && code) {
+                    backToLobby.href = 'lobby.html?code=' + encodeURIComponent(code);
+                }
+
+                if (!code || code.length !== 6) {
+                    if (watchContent) watchContent.style.display = 'none';
+                    if (watchError) watchError.style.display = 'block';
+                    return;
+                }
+
+                var rooms = getRooms();
+                var room = rooms[code];
+
+                if (!room || !room.members) {
+                    if (watchContent) watchContent.style.display = 'none';
+                    if (watchError) watchError.style.display = 'block';
+                    return;
+                }
+
+                if (watchError) watchError.style.display = 'none';
+                if (watchContent) watchContent.style.display = 'block';
+
+                if (watchParticipants) {
+                    (room.members || []).forEach(function (m) {
+                        var div = document.createElement('div');
+                        div.className = 'watch-participant';
+                        var img = document.createElement('img');
+                        img.src = 'https://api.dicebear.com/9.x/avataaars/svg?seed=' + (m.avatar || 'Felix');
+                        img.alt = m.name;
+                        var span = document.createElement('span');
+                        span.textContent = m.name + (m.isHost ? ' (Host)' : '');
+                        div.appendChild(img);
+                        div.appendChild(span);
+                        watchParticipants.appendChild(div);
+                    });
+                }
+            }
+
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initWatch);
+            } else {
+                initWatch();
+            }
+        })();
+    </script>
+</body>
+
+</html>
