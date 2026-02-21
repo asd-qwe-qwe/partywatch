@@ -1763,7 +1763,8 @@ select.form-input {
 }
 .room-platforms-grid .room-platform-icon .room-platform-logo,
 .room-platforms-grid .room-platform-icon .room-platform-fallback,
-.room-platforms-grid .room-platform-icon > i {
+.room-platforms-grid .room-platform-icon > i,
+.room-platforms-grid .room-platform-icon .room-platform-viewall-top {
     position: relative;
     z-index: 1;
 }
@@ -1791,18 +1792,25 @@ select.form-input {
 .room-platform-viewall-icon {
     background: #000 !important;
     flex-direction: column;
-    gap: 6px;
+    justify-content: center;
+    align-items: center;
+    gap: 4px;
+    padding: 8px 10px;
+    box-sizing: border-box;
 }
 .room-platform-viewall-top {
-    font-size: 0.7rem;
+    font-size: 0.65rem;
     font-weight: 700;
-    color: rgba(255,255,255,0.95);
-    line-height: 1;
+    color: #fff;
+    line-height: 1.1;
     text-align: center;
+    white-space: nowrap;
+    flex-shrink: 0;
 }
 .room-platform-viewall-icon i {
-    font-size: 1.75rem;
+    font-size: 1.5rem;
     color: rgba(255,255,255,0.9);
+    flex-shrink: 0;
 }
 
 /* Platform "Download App" modal - içerik her zaman görünsün */
@@ -2097,6 +2105,21 @@ select.form-input {
 @keyframes roomOverlayIn {
     from { opacity: 0; }
     to { opacity: 1; }
+}
+@keyframes roomOverlayOut {
+    from { opacity: 1; }
+    to { opacity: 0; }
+}
+.room-modal-overlay.closing {
+    animation: roomOverlayOut 0.2s ease forwards;
+    pointer-events: none;
+}
+.room-modal-overlay.closing .room-modal {
+    animation: roomModalOut 0.2s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+}
+@keyframes roomModalOut {
+    from { opacity: 1; transform: scale(1) translateY(0); }
+    to { opacity: 0; transform: scale(0.96) translateY(8px); }
 }
 .room-modal-overlay.hidden { display: none !important; }
 .room-modal {
