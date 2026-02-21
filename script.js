@@ -278,20 +278,24 @@ function checkAuthState() {
         const closeBtn = dropdown.querySelector('.profile-menu-close');
         const logoutBtn = dropdown.querySelector('.profile-menu-logout');
 
+        menu.style.display = 'none';
+
+        function setMenuOpen(open) {
+            menu.style.display = open ? 'block' : 'none';
+            dropdown.classList.toggle('open', open);
+            trigger.setAttribute('aria-expanded', open);
+        }
+
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            dropdown.classList.toggle('open');
-            trigger.setAttribute('aria-expanded', dropdown.classList.contains('open'));
+            setMenuOpen(menu.style.display !== 'block');
         });
 
-        closeBtn.addEventListener('click', () => {
-            dropdown.classList.remove('open');
-            trigger.setAttribute('aria-expanded', 'false');
-        });
+        closeBtn.addEventListener('click', () => setMenuOpen(false));
 
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            dropdown.classList.remove('open');
+            setMenuOpen(false);
             if (confirm(`Log out as ${currentUser.username}?`)) {
                 localStorage.removeItem('watch4party_currentUser');
                 window.location.reload();
@@ -299,13 +303,10 @@ function checkAuthState() {
         });
 
         dropdown.querySelectorAll('.profile-menu-item[href]').forEach((link) => {
-            link.addEventListener('click', () => { dropdown.classList.remove('open'); });
+            link.addEventListener('click', () => setMenuOpen(false));
         });
 
-        document.addEventListener('click', () => {
-            dropdown.classList.remove('open');
-            trigger.setAttribute('aria-expanded', 'false');
-        });
+        document.addEventListener('click', () => setMenuOpen(false));
         menu.addEventListener('click', (e) => e.stopPropagation());
     }
 }
