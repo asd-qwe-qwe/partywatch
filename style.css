@@ -973,6 +973,7 @@ ul {
 .profile-page {
     min-height: 100vh;
     background: var(--bg-primary);
+    background: radial-gradient(circle at 50% 50%, rgba(20, 20, 20, 1) 0%, rgba(5, 5, 5, 1) 100%);
 }
 .profile-app {
     padding-bottom: 4rem;
@@ -985,6 +986,8 @@ ul {
     max-width: 1200px;
     margin: 0 auto;
     border-bottom: var(--glass-border);
+    background: var(--bg-glass);
+    backdrop-filter: blur(12px);
 }
 .profile-back {
     display: inline-flex;
@@ -995,7 +998,7 @@ ul {
     font-weight: 500;
 }
 .profile-back:hover {
-    color: var(--text-primary);
+    color: var(--accent-red);
 }
 .profile-title {
     font-size: 1.5rem;
@@ -1010,15 +1013,16 @@ ul {
     gap: 1.5rem;
     padding: 2rem;
     margin-bottom: 2rem;
-    border-radius: 20px;
-    background: linear-gradient(135deg, #2563eb 0%, #7c3aed 50%, #ea580c 100%);
-    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 24px;
+    background: var(--accent-premium);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: var(--glow-shadow);
 }
 .profile-hero-avatar {
     width: 80px;
     height: 80px;
     border-radius: 50%;
-    background: rgba(255, 255, 255, 0.25);
+    background: rgba(255, 255, 255, 0.2);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1040,14 +1044,14 @@ ul {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    color: #fbbf24;
+    color: #ffd700;
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
 }
 .profile-hero-date {
     font-size: 0.85rem;
-    color: rgba(255, 255, 255, 0.85);
+    color: rgba(255, 255, 255, 0.9);
 }
 .profile-stats {
     display: grid;
@@ -1064,7 +1068,8 @@ ul {
     transition: var(--transition-fast);
 }
 .profile-stat-card:hover {
-    border-color: rgba(255, 255, 255, 0.12);
+    border-color: var(--accent-red);
+    box-shadow: 0 4px 20px rgba(229, 9, 20, 0.15);
 }
 .profile-stat-card i {
     display: block;
@@ -1085,7 +1090,7 @@ ul {
 .profile-card {
     background: var(--bg-secondary);
     border: 1px solid var(--card-border);
-    border-radius: 20px;
+    border-radius: 24px;
     padding: 1.5rem 2rem;
     margin-bottom: 1.5rem;
 }
@@ -1098,7 +1103,7 @@ ul {
     margin-bottom: 1.25rem;
 }
 .profile-card-title i {
-    color: #3b82f6;
+    color: var(--accent-red);
     font-size: 1rem;
 }
 .profile-edit-toggle {
@@ -1154,9 +1159,9 @@ ul {
     color: var(--text-primary);
 }
 .profile-genre-tag.selected {
-    background: rgba(59, 130, 246, 0.2);
-    border: 1px solid #3b82f6;
-    color: #fff;
+    background: rgba(229, 9, 20, 0.2);
+    border: 1px solid var(--accent-red);
+    color: var(--text-primary);
 }
 .profile-recent-empty {
     text-align: center;
