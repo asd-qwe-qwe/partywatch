@@ -764,6 +764,21 @@ ul {
     background: rgba(255, 255, 255, 0.05);
 }
 
+.form-checkbox-label {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    cursor: pointer;
+    color: var(--text-primary);
+    font-size: 0.95rem;
+}
+.form-checkbox-label .form-checkbox {
+    width: 1.1rem;
+    height: 1.1rem;
+    accent-color: var(--accent-red);
+    cursor: pointer;
+}
+
 .form-select,
 select.form-input {
     cursor: pointer;
