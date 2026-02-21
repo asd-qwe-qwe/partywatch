@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Join Room - Watch4Party Premium</title>
+    <title>Create or Join Room - Watch4Party Premium</title>
     <link rel="canonical" href="https://watch4party.com/room">
     <link rel="icon" type="image/png" href="../img/hero-logo.png">
     <link
@@ -17,8 +17,15 @@
 <body>
     <div class="auth-container">
         <div class="auth-card">
-            <h2 class="auth-title">Enter Room</h2>
+            <h2 class="auth-title" id="room-title">Enter Room</h2>
             <p class="auth-subtitle" id="room-subtitle">Join the watch party as a guest</p>
+
+            <!-- Join: room code -->
+            <div id="join-code-group" class="form-group" style="display: none;">
+                <label class="form-label" for="room-code">Room Code</label>
+                <input type="text" id="room-code" class="form-input" placeholder="e.g. ABC123" maxlength="6"
+                    autocomplete="off" style="text-transform: uppercase; letter-spacing: 0.2em;">
+            </div>
 
             <div id="guest-form">
                 <div class="form-group">
@@ -30,7 +37,7 @@
                     <label class="form-label">Choose Avatar</label>
                     <div class="avatar-grid"
                         style="display: flex; gap: 10px; justify-content: center; margin-bottom: 1rem;">
-                        <!-- Avatars will be injected here -->
+                        <!-- Avatars injected by JS -->
                     </div>
                 </div>
                 <style>
@@ -43,12 +50,10 @@
                         transition: all 0.2s;
                         opacity: 0.7;
                     }
-
                     .avatar-option:hover {
                         transform: scale(1.1);
                         opacity: 1;
                     }
-
                     .avatar-option.selected {
                         border-color: var(--accent-red);
                         opacity: 1;
@@ -56,118 +61,213 @@
                         transform: scale(1.1);
                     }
                 </style>
-                <button id="btn-guest" class="btn btn-primary" style="width: 100%;">Continue as Guest</button>
+                <button id="btn-submit" class="btn btn-primary" style="width: 100%;">Continue as Guest</button>
             </div>
 
             <div class="auth-footer" style="margin-top: 1rem;">
-                <a href="/" style="color: var(--text-secondary); font-size: 0.8rem;">
+                <a href="../index.html" style="color: var(--text-secondary); font-size: 0.8rem;">
                     <i class="fa-solid fa-arrow-left"></i> Back to Home
                 </a>
+                <span id="switch-mode-link" style="margin-left: 1rem;"></span>
             </div>
         </div>
     </div>
 
-    <!-- Error/Redirect Modal -->
+    <!-- Error modal (room not found / invalid) -->
     <div id="errorModal" class="modal-overlay" style="display: none; opacity: 0;">
         <div class="modal-content">
             <div class="modal-icon"
                 style="background: rgba(229, 9, 20, 0.1); color: var(--accent-red); border-color: rgba(229, 9, 20, 0.3);">
                 <i class="fa-solid fa-triangle-exclamation"></i>
             </div>
-            <h3>Connection Error</h3>
-            <p>The web player is currently at capacity or your browser does not support the required codecs for this
-                room.</p>
-            <p style="font-size: 0.9em; color: var(--text-secondary);">Please download the desktop app for a stable
-                experience.</p>
+            <h3 id="errorModalTitle">Room not found</h3>
+            <p id="errorModalMessage">Please check the room code and try again.</p>
             <div class="modal-actions">
-                <button class="btn btn-premium-glow" id="btn-download-redirect">
-                    <i class="fa-brands fa-windows" style="margin-right: 8px;"></i> Download App
-                </button>
+                <button class="btn btn-primary" id="btn-error-close">OK</button>
             </div>
         </div>
     </div>
 
     <script>
-        function initRoom() {
-            const btnGuest = document.getElementById('btn-guest');
-            const guestNameInput = document.getElementById('guest-name');
-            const roomSubtitle = document.getElementById('room-subtitle');
-            const errorModal = document.getElementById('errorModal');
-            const btnDownload = document.getElementById('btn-download-redirect');
-            const downloadLink = "https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1";
+        (function () {
+            const STORAGE_KEY = 'watch4party_rooms';
+            const AVATAR_SEEDS = ['Felix', 'Aneka', 'Zoe', 'Max', 'Luna'];
 
-            if (!btnGuest || !errorModal || !btnDownload) return;
+            function getRooms() {
+                try {
+                    const raw = localStorage.getItem(STORAGE_KEY);
+                    return raw ? JSON.parse(raw) : {};
+                } catch (_) { return {}; }
+            }
 
-            // Logged-in user: show name instead of guest
-            let currentUser = null;
-            try {
-                currentUser = JSON.parse(localStorage.getItem('watch4party_currentUser'));
-            } catch (_) {}
-            if (currentUser && currentUser.username) {
-                if (roomSubtitle) roomSubtitle.textContent = 'Join the watch party as ' + currentUser.username;
-                if (guestNameInput) {
+            function setRooms(rooms) {
+                localStorage.setItem(STORAGE_KEY, JSON.stringify(rooms));
+            }
+
+            function generateCode() {
+                const chars = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
+                let code = '';
+                for (let i = 0; i < 6; i++) code += chars[Math.floor(Math.random() * chars.length)];
+                return code;
+            }
+
+            function isCreateMode() {
+                const params = new URLSearchParams(window.location.search);
+                return params.get('create') === '1';
+            }
+
+            function initRoom() {
+                const roomTitle = document.getElementById('room-title');
+                const roomSubtitle = document.getElementById('room-subtitle');
+                const joinCodeGroup = document.getElementById('join-code-group');
+                const roomCodeInput = document.getElementById('room-code');
+                const guestNameInput = document.getElementById('guest-name');
+                const avatarGrid = document.querySelector('.avatar-grid');
+                const btnSubmit = document.getElementById('btn-submit');
+                const switchModeLink = document.getElementById('switch-mode-link');
+                const errorModal = document.getElementById('errorModal');
+                const errorModalTitle = document.getElementById('errorModalTitle');
+                const errorModalMessage = document.getElementById('errorModalMessage');
+                const btnErrorClose = document.getElementById('btn-error-close');
+
+                if (!btnSubmit || !guestNameInput) return;
+
+                let currentUser = null;
+                try {
+                    currentUser = JSON.parse(localStorage.getItem('watch4party_currentUser'));
+                } catch (_) {}
+
+                const createMode = isCreateMode();
+                var joinParam = new URLSearchParams(window.location.search).get('join');
+                if (!createMode && joinParam && joinParam.trim().length === 6 && roomCodeInput) {
+                    roomCodeInput.value = joinParam.trim().toUpperCase();
+                }
+
+                if (createMode) {
+                    if (roomTitle) roomTitle.textContent = 'Create Room';
+                    if (roomSubtitle) roomSubtitle.textContent = 'Set your display name and start a watch party';
+                    if (joinCodeGroup) joinCodeGroup.style.display = 'none';
+                    btnSubmit.textContent = 'Create Room';
+                    if (switchModeLink) {
+                        switchModeLink.innerHTML = '<a href="index.html" style="color: var(--accent-red); font-size: 0.8rem;">Join existing room</a>';
+                    }
+                } else {
+                    if (roomTitle) roomTitle.textContent = 'Join Room';
+                    if (roomSubtitle) roomSubtitle.textContent = currentUser && currentUser.username
+                        ? 'Join the watch party as ' + currentUser.username
+                        : 'Enter the room code and your display name';
+                    if (joinCodeGroup) joinCodeGroup.style.display = 'block';
+                    btnSubmit.textContent = (currentUser && currentUser.username) ? 'Join Room' : 'Continue as Guest';
+                    if (switchModeLink) {
+                        switchModeLink.innerHTML = '<a href="index.html?create=1" style="color: var(--accent-red); font-size: 0.8rem;">Create new room</a>';
+                    }
+                }
+
+                if (currentUser && currentUser.username) {
                     guestNameInput.value = currentUser.username;
                     guestNameInput.placeholder = currentUser.username;
                 }
-                btnGuest.textContent = 'Join Room';
-            }
 
-            // Avatar Logic
-            const seeds = ['Felix', 'Aneka', 'Zoe', 'Max', 'Luna'];
-            const avatarGrid = document.querySelector('.avatar-grid');
-            let selectedAvatar = null;
+                // Avatars
+                let selectedAvatar = AVATAR_SEEDS[0];
+                if (avatarGrid) {
+                    avatarGrid.innerHTML = '';
+                    AVATAR_SEEDS.forEach(function (seed, index) {
+                        const img = document.createElement('img');
+                        img.src = 'https://api.dicebear.com/9.x/avataaars/svg?seed=' + seed;
+                        img.className = 'avatar-option' + (index === 0 ? ' selected' : '');
+                        img.alt = seed;
+                        img.onclick = function () {
+                            document.querySelectorAll('.avatar-option').forEach(function (el) { el.classList.remove('selected'); });
+                            img.classList.add('selected');
+                            selectedAvatar = seed;
+                        };
+                        avatarGrid.appendChild(img);
+                    });
+                }
 
-            if (avatarGrid) {
-                seeds.forEach((seed, index) => {
-                    const img = document.createElement('img');
-                    img.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}`;
-                    img.className = 'avatar-option';
-                    if (index === 0) {
-                        img.classList.add('selected');
-                        selectedAvatar = seed;
+                function showError(title, message) {
+                    if (errorModalTitle) errorModalTitle.textContent = title;
+                    if (errorModalMessage) errorModalMessage.textContent = message;
+                    if (errorModal) {
+                        errorModal.style.display = 'flex';
+                        errorModal.classList.add('active');
+                        errorModal.style.opacity = '1';
                     }
-                    img.onclick = () => {
-                        document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
-                        img.classList.add('selected');
-                        selectedAvatar = seed;
-                    };
-                    avatarGrid.appendChild(img);
+                }
+
+                if (btnErrorClose) {
+                    btnErrorClose.addEventListener('click', function () {
+                        if (errorModal) {
+                            errorModal.style.display = 'none';
+                            errorModal.style.opacity = '0';
+                            errorModal.classList.remove('active');
+                        }
+                    });
+                }
+                if (errorModal) {
+                    errorModal.addEventListener('click', function (e) {
+                        if (e.target === errorModal) {
+                            errorModal.style.display = 'none';
+                            errorModal.style.opacity = '0';
+                            errorModal.classList.remove('active');
+                        }
+                    });
+                }
+
+                btnSubmit.addEventListener('click', function () {
+                    const name = (guestNameInput.value || '').trim();
+                    if (!name) {
+                        showError('Name required', 'Please enter a display name.');
+                        return;
+                    }
+
+                    if (createMode) {
+                        const rooms = getRooms();
+                        let code = generateCode();
+                        while (rooms[code]) code = generateCode();
+                        rooms[code] = {
+                            code: code,
+                            hostName: name,
+                            hostAvatar: selectedAvatar,
+                            members: [{ name: name, avatar: selectedAvatar, isHost: true }],
+                            createdAt: Date.now()
+                        };
+                        setRooms(rooms);
+                        window.location.href = 'lobby.html?code=' + encodeURIComponent(code);
+                        return;
+                    }
+
+                    const codeInput = (roomCodeInput && roomCodeInput.value) ? roomCodeInput.value.trim().toUpperCase() : '';
+                    if (!codeInput || codeInput.length !== 6) {
+                        showError('Room code required', 'Please enter the 6-character room code to join.');
+                        return;
+                    }
+
+                    const rooms = getRooms();
+                    const room = rooms[codeInput];
+                    if (!room || !room.members) {
+                        showError('Room not found', 'No room found with this code. Check the code or create a new room.');
+                        return;
+                    }
+
+                    const alreadyIn = room.members.some(function (m) { return m.name === name; });
+                    if (!alreadyIn) {
+                        room.members.push({ name: name, avatar: selectedAvatar, isHost: false });
+                        setRooms(rooms);
+                    }
+
+                    window.location.href = 'lobby.html?code=' + encodeURIComponent(codeInput);
                 });
             }
 
-            btnGuest.addEventListener('click', () => {
-                const originalText = btnGuest.innerHTML;
-                btnGuest.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
-                btnGuest.disabled = true;
-
-                setTimeout(() => {
-                    errorModal.style.display = 'flex';
-                    errorModal.offsetHeight;
-                    errorModal.classList.add('active');
-                    errorModal.style.opacity = '1';
-
-                    btnGuest.innerHTML = originalText;
-                    btnGuest.disabled = false;
-                }, 1500);
-            });
-
-            btnDownload.addEventListener('click', () => {
-                btnDownload.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Starting...';
-                window.location.href = downloadLink;
-            });
-
-            errorModal.addEventListener('click', (e) => {
-                if (e.target === errorModal) { /* close on outside click */ }
-            });
-        }
-        if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', initRoom);
-        } else {
-            initRoom();
-        }
+            if (document.readyState === 'loading') {
+                document.addEventListener('DOMContentLoaded', initRoom);
+            } else {
+                initRoom();
+            }
+        })();
     </script>
-<script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"ae63f417532147d68913bc8e1155ad01","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 
 </html>
-
