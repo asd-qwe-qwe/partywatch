@@ -139,8 +139,8 @@
 
                 const createMode = isCreateMode();
                 var joinParam = new URLSearchParams(window.location.search).get('join');
-                if (!createMode && joinParam && joinParam.trim().length === 6 && roomCodeInput) {
-                    roomCodeInput.value = joinParam.trim().toUpperCase();
+                if (!createMode && joinParam && roomCodeInput) {
+                    roomCodeInput.value = (joinParam.trim().toUpperCase().replace(/[^A-Z0-9]/g, '')).slice(0, 6);
                 }
 
                 if (createMode) {
@@ -235,20 +235,21 @@
                         };
                         setRooms(rooms);
                         try { sessionStorage.setItem('watch4party_room_displayName', name); } catch (_) {}
-                        window.location.href = 'lobby.html?code=' + encodeURIComponent(code);
+                        window.location.href = 'watch.html?code=' + encodeURIComponent(code);
                         return;
                     }
 
-                    const codeInput = (roomCodeInput && roomCodeInput.value) ? roomCodeInput.value.trim().toUpperCase() : '';
+                    var rawCode = (roomCodeInput && roomCodeInput.value) ? roomCodeInput.value : '';
+                    var codeInput = (rawCode.trim().toUpperCase().replace(/[^A-Z0-9]/g, '')).slice(0, 6);
                     if (!codeInput || codeInput.length !== 6) {
-                        showError('Room code required', 'Please enter the 6-character room code to join.');
+                        showError('Room code required', 'Please enter the 6-character room code (letters and numbers).');
                         return;
                     }
 
                     const rooms = getRooms();
                     const room = rooms[codeInput];
                     if (!room || !room.members) {
-                        showError('Room not found', 'No room found with this code. Check the code or create a new room.');
+                        showError('Room not found', 'No room with this code in this browser. Open "Create Room" in another tab first, create a room, then enter that code here (same browser only).');
                         return;
                     }
 
