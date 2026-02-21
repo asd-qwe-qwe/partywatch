@@ -255,7 +255,7 @@ function checkAuthState() {
         const dropdown = document.createElement('div');
         dropdown.className = 'profile-dropdown';
         dropdown.innerHTML = `
-            <button type="button" class="profile-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+            <button type="button" class="btn profile-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
                 <span>${escapeHtml(currentUser.username)}</span>
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
