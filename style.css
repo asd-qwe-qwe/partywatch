@@ -1464,18 +1464,22 @@ select.form-input {
 /* ========== Room Watch App (full room UI) ========== */
 .body-room-app {
     height: 100vh;
+    min-height: 100vh;
     overflow: hidden;
     margin: 0;
     padding: 0;
+    box-sizing: border-box;
 }
 .room-app-container {
     display: flex;
-    height: 100vh;
+    height: 100%;
+    min-height: 0;
     width: 100vw;
     overflow: hidden;
     background: var(--bg-primary);
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
 }
 .room-sidebar {
     width: 64px;
@@ -1548,6 +1552,7 @@ select.form-input {
     display: flex;
     flex-direction: column;
     min-width: 0;
+    min-height: 0;
     background: var(--bg-primary);
 }
 .room-topbar {
@@ -1611,7 +1616,7 @@ select.form-input {
 }
 .room-player-area {
     flex: 1;
-    padding: 0.35rem 1rem 1rem;
+    padding: 0.2rem 1rem 0.6rem;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1620,7 +1625,7 @@ select.form-input {
 .room-video-container {
     width: 100%;
     aspect-ratio: 16/9;
-    max-height: calc(100vh - 56px - 180px);
+    max-height: calc(100vh - 56px - 150px);
     background: #000;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -1684,14 +1689,14 @@ select.form-input {
 
 /* Platforms section (YouTube, Netflix, Spotify, Disney+) */
 .room-platforms-section {
-    padding: 0.35rem 0 0.75rem;
+    padding: 0.25rem 0 0.5rem;
     flex-shrink: 0;
 }
 .room-platforms-title {
     font-size: 0.95rem;
     font-weight: 600;
     color: var(--text-secondary);
-    margin: 0 0 0.75rem;
+    margin: 0 0 0.5rem;
 }
 .room-platforms-grid {
     padding: 0;
