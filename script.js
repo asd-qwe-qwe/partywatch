@@ -129,8 +129,14 @@ function initAuth() {
                 return;
             }
 
-            // Get existing users
-            const users = JSON.parse(localStorage.getItem('watch4party_users') || '[]');
+            // Get existing users (safe parse in case of corrupted data)
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('watch4party_users') || '[]');
+            } catch (_) {
+                users = [];
+            }
+            if (!Array.isArray(users)) users = [];
 
             // Check duplicate
             if (users.find(u => u.email === email)) {
@@ -166,7 +172,13 @@ function initAuth() {
             const email = emailInput.value;
             const password = passwordInput.value;
 
-            const users = JSON.parse(localStorage.getItem('watch4party_users') || '[]');
+            let users = [];
+            try {
+                users = JSON.parse(localStorage.getItem('watch4party_users') || '[]');
+            } catch (_) {
+                users = [];
+            }
+            if (!Array.isArray(users)) users = [];
             const validUser = users.find(u => u.email === email && u.password === password);
 
             if (validUser) {
@@ -198,7 +210,12 @@ if (document.readyState === 'loading') {
 }
 
 function checkAuthState() {
-    const currentUser = JSON.parse(localStorage.getItem('watch4party_currentUser'));
+    let currentUser = null;
+    try {
+        currentUser = JSON.parse(localStorage.getItem('watch4party_currentUser'));
+    } catch (_) {
+        currentUser = null;
+    }
     const authBtn = document.querySelector('.navbar .desktop-only .btn-primary');
 
     // Only run this on pages with the navbar login button (like index.html)
