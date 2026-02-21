@@ -1554,14 +1554,6 @@ select.form-input {
     overflow: hidden;
     text-overflow: ellipsis;
 }
-.room-topbar-name code {
-    background: var(--accent-red);
-    color: #fff;
-    padding: 2px 6px;
-    border-radius: 4px;
-    font-size: 0.85em;
-    margin-right: 6px;
-}
 .room-search-wrap {
     flex: 1;
     max-width: 520px;
