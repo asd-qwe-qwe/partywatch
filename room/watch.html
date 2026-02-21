@@ -327,8 +327,6 @@
 
         function roomShowInvite() {
             document.getElementById('room-invite-modal').classList.remove('hidden');
-            var codeEl = document.getElementById('room-invite-code');
-            if (codeEl && window.roomCode) codeEl.textContent = window.roomCode;
         }
         function roomShowSettings() {
             document.getElementById('room-settings-modal').classList.remove('hidden');
@@ -440,7 +438,6 @@
             window.roomData = room;
             var nameText = document.getElementById('room-name-text');
             if (nameText) nameText.textContent = room.hostName ? room.hostName + "'s room" : 'Watch party';
-            document.getElementById('room-invite-code').textContent = code;
 
             window.roomChatClientId = Math.random().toString(36).slice(2);
             var chatMessages = roomLoadChat();
