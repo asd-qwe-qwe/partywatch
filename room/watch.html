@@ -129,7 +129,7 @@
             <div class="room-invite-app-icon"><i class="fa-solid fa-mobile-screen-button"></i></div>
             <h2 class="room-invite-app-title">App Required</h2>
             <p class="room-invite-app-text">To generate invite links and host room parties seamlessly, please use our desktop application.</p>
-            <a href="https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1" class="room-invite-app-btn" target="_blank" rel="noopener">Download Watch4Party App</a>
+            <a href="#" class="room-invite-app-btn watch4party-download-link" target="_blank" rel="noopener">Download Watch4Party App</a>
         </div>
     </div>
     <!-- Settings Modal -->
@@ -137,8 +137,8 @@
         <div class="room-modal large">
             <span class="room-modal-close" onclick="roomHideModals()">&times;</span>
             <h2>Room settings</h2>
-            <p>Room code cannot be changed. Use the invite link to share.</p>
-            <a href="lobby.html" id="room-back-to-lobby" class="room-download-link"><i class="fa-solid fa-arrow-left"></i> Back to lobby</a>
+            <p>Invite friends from the desktop app.</p>
+            <a href="../index.html" class="room-download-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
         </div>
     </div>
     <!-- Help Modal -->
@@ -148,7 +148,7 @@
             <h2>How to use Watch4Party</h2>
             <p>Paste a YouTube link in the search bar or click a suggestion. For synced playback across devices, use the desktop app.</p>
             <p><strong>Shortcuts:</strong> Enter = search, Space = play/pause (when player focused)</p>
-            <a href="https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1" class="room-download-link" target="_blank" rel="noopener"><i class="fa-brands fa-windows"></i> Download desktop app</a>
+            <a href="#" class="room-download-link watch4party-download-link" target="_blank" rel="noopener"><i class="fa-brands fa-windows"></i> Download desktop app</a>
         </div>
     </div>
 
@@ -164,7 +164,10 @@
     <script>
     (function () {
         var STORAGE_KEY = 'watch4party_rooms';
-        var DOWNLOAD_URL = 'https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1';
+        // index.html'deki WATCH4PARTY_DOWNLOAD_URL ile aynı tutun (tek yer: index.html)
+        if (typeof window.WATCH4PARTY_DOWNLOAD_URL === 'undefined') {
+            window.WATCH4PARTY_DOWNLOAD_URL = 'https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1';
+        }
 
         function getRooms() {
             try { return JSON.parse(localStorage.getItem(STORAGE_KEY) || '{}'); } catch (_) { return {}; }
@@ -329,8 +332,6 @@
         }
         function roomShowSettings() {
             document.getElementById('room-settings-modal').classList.remove('hidden');
-            var a = document.getElementById('room-back-to-lobby');
-            if (a && window.roomCode) a.href = 'lobby.html?code=' + encodeURIComponent(window.roomCode);
         }
         function roomShowHelp() { document.getElementById('room-help-modal').classList.remove('hidden'); }
         function roomHideModals() {
@@ -421,6 +422,7 @@
         }
 
         function init() {
+            document.querySelectorAll('.watch4party-download-link').forEach(function (a) { a.href = window.WATCH4PARTY_DOWNLOAD_URL; });
             var code = getCode();
             if (!code || code.length !== 6) {
                 document.getElementById('room-app').style.display = 'none';
