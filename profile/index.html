@@ -66,10 +66,7 @@
             </section>
 
             <section class="profile-card profile-edit-section">
-                <label class="profile-edit-toggle">
-                    <input type="checkbox" id="edit-profile-checkbox">
-                    <span class="profile-edit-toggle-text">Edit Profile</span>
-                </label>
+                <h3 class="profile-card-title"><i class="fa-solid fa-pen-to-square"></i> Edit Profile</h3>
                 <form id="profile-form" class="profile-form">
                     <div class="profile-form-grid">
                         <div class="form-group">
@@ -86,13 +83,35 @@
                         </div>
                         <div class="form-group">
                             <label class="form-label" for="profile-country">Country</label>
-                            <select id="profile-country" class="form-input">
+                            <select id="profile-country" class="form-input form-select">
                                 <option value="">Select country</option>
                                 <option value="TR">Turkey</option>
                                 <option value="US">United States</option>
                                 <option value="GB">United Kingdom</option>
                                 <option value="DE">Germany</option>
                                 <option value="FR">France</option>
+                                <option value="NL">Netherlands</option>
+                                <option value="ES">Spain</option>
+                                <option value="IT">Italy</option>
+                                <option value="RU">Russia</option>
+                                <option value="CA">Canada</option>
+                                <option value="AU">Australia</option>
+                                <option value="BR">Brazil</option>
+                                <option value="JP">Japan</option>
+                                <option value="KR">South Korea</option>
+                                <option value="IN">India</option>
+                                <option value="CN">China</option>
+                                <option value="MX">Mexico</option>
+                                <option value="AR">Argentina</option>
+                                <option value="PL">Poland</option>
+                                <option value="SE">Sweden</option>
+                                <option value="NO">Norway</option>
+                                <option value="PT">Portugal</option>
+                                <option value="GR">Greece</option>
+                                <option value="AE">United Arab Emirates</option>
+                                <option value="SA">Saudi Arabia</option>
+                                <option value="EG">Egypt</option>
+                                <option value="ZA">South Africa</option>
                             </select>
                         </div>
                     </div>
@@ -179,14 +198,6 @@
                 });
             });
 
-            document.getElementById('edit-profile-checkbox').addEventListener('change', function () {
-                const form = document.getElementById('profile-form');
-                form.querySelectorAll('input, select, textarea').forEach(el => { el.disabled = !this.checked; });
-                form.querySelector('.profile-save-btn').style.display = this.checked ? 'inline-flex' : 'none';
-            });
-            document.getElementById('profile-form').querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
-            document.querySelector('.profile-save-btn').style.display = 'none';
-
             document.getElementById('profile-form').addEventListener('submit', function (e) {
                 e.preventDefault();
                 profileData.displayName = document.getElementById('profile-display-name').value;
@@ -197,9 +208,6 @@
                 localStorage.setItem(PROFILE_KEY, JSON.stringify(profileData));
                 document.getElementById('profile-username').textContent = profileData.displayName || user.username;
                 document.getElementById('profile-avatar').textContent = (profileData.displayName || user.username).charAt(0).toUpperCase();
-                document.getElementById('edit-profile-checkbox').checked = false;
-                document.getElementById('profile-form').querySelectorAll('input, select, textarea').forEach(el => { el.disabled = true; });
-                document.querySelector('.profile-save-btn').style.display = 'none';
             });
         })();
     </script>
