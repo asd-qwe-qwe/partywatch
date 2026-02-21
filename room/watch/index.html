@@ -312,6 +312,7 @@
             var input = document.getElementById('room-chat-input');
             var text = (input && input.value || '').trim();
             if (!text) return;
+            if (!window.roomChatClientId) window.roomChatClientId = Math.random().toString(36).slice(2);
             var now = new Date();
             var time = (now.getHours() < 10 ? '0' : '') + now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
             var user = roomGetDisplayName();
@@ -346,12 +347,22 @@
                 return;
             }
             try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    alert('Camera is not supported in this browser.');
+                    return;
+                }
                 var stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 360 } }, audio: false });
                 window.roomVideoStream = stream;
-                if (video) { video.srcObject = stream; video.style.display = 'block'; video.play().catch(function () {}); }
+                if (video) {
+                    video.srcObject = stream;
+                    video.style.display = 'block';
+                    video.muted = true;
+                    video.playsInline = true;
+                    video.play().catch(function () {});
+                }
                 if (btn) { btn.classList.add('active'); btn.querySelector('i').className = 'fa-solid fa-video'; }
             } catch (e) {
-                alert('Camera access denied or not available. Check browser permissions.');
+                alert('Camera access denied or not available. Check browser permissions and use HTTPS or localhost.');
             }
         }
         async function roomToggleMic() {
@@ -367,6 +378,10 @@
                 return;
             }
             try {
+                if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+                    alert('Microphone is not supported in this browser.');
+                    return;
+                }
                 var stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
                 window.roomAudioStream = stream;
                 window.roomAudioTrack = stream.getAudioTracks()[0];
@@ -376,7 +391,7 @@
                 if (levelWrap) levelWrap.style.display = 'flex';
                 roomStartMicLevel();
             } catch (e) {
-                alert('Microphone access denied or not available. Check browser permissions.');
+                alert('Microphone access denied or not available. Check browser permissions and use HTTPS or localhost.');
             }
         }
         function roomStartMicLevel() {
@@ -385,6 +400,7 @@
             if (!analyser) {
                 var ctx = null;
                 try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) { return; }
+                if (ctx.state === 'suspended') ctx.resume().catch(function () {});
                 var source = ctx.createMediaStreamSource(window.roomAudioStream);
                 analyser = ctx.createAnalyser();
                 analyser.fftSize = 256;
@@ -473,8 +489,9 @@
             if (searchInput) searchInput.addEventListener('keypress', function (e) { if (e.key === 'Enter') doSearch(); });
             if (searchBtn) searchBtn.addEventListener('click', doSearch);
 
-            document.getElementById('room-chat-input').addEventListener('keypress', function (e) {
-                if (e.key === 'Enter') roomSendMessage();
+            var chatInputEl = document.getElementById('room-chat-input');
+            if (chatInputEl) chatInputEl.addEventListener('keypress', function (e) {
+                if (e.key === 'Enter') { e.preventDefault(); roomSendMessage(); }
             });
 
             document.querySelectorAll('.room-video-card').forEach(function (card) {
