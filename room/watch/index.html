@@ -427,6 +427,13 @@
             if (fill) fill.style.height = '0%';
         }
 
+        window.roomShowInvite = roomShowInvite;
+        window.roomShowSettings = roomShowSettings;
+        window.roomShowHelp = roomShowHelp;
+        window.roomHideModals = roomHideModals;
+        window.roomToggleCamera = roomToggleCamera;
+        window.roomToggleMic = roomToggleMic;
+
         function roomCopyInviteLink() {
             var base = window.location.pathname.replace(/\/watch\/?.*$/, '') || '/room';
             var watchPath = base + (base.endsWith('/') ? '' : '/') + 'watch/';
