@@ -1784,28 +1784,38 @@ select.form-input {
 /* +50 platforms / View all card - aynı boyutta, en sağda */
 .room-platform-viewall-icon {
     background: #000 !important;
+    position: relative;
+    flex-direction: column;
+    gap: 6px;
+}
+.room-platform-viewall-icon-symbol {
+    font-size: 1.5rem;
+    color: rgba(255,255,255,0.9);
+    line-height: 1;
+    flex-shrink: 0;
 }
 .room-platform-viewall-inner {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 10px;
+    gap: 4px;
     width: 100%;
 }
 .room-platform-viewall-label {
-    font-size: 0.95rem;
+    font-size: 0.8rem;
     font-weight: 600;
     color: #fff;
     text-align: center;
+    line-height: 1.2;
 }
 .room-platform-viewall-btn {
     background: var(--accent-red);
     color: #fff;
     border: none;
-    padding: 8px 18px;
+    padding: 6px 14px;
     border-radius: 50px;
-    font-size: 0.85rem;
+    font-size: 0.8rem;
     font-weight: 600;
     cursor: pointer;
     transition: filter 0.2s ease, transform 0.2s ease;
@@ -1818,8 +1828,36 @@ select.form-input {
     transform: translateY(0);
 }
 
-/* Platform "Download App" modal - başlık yok, sadece ikon + metin + buton */
+/* Platform "Download App" modal - içerik her zaman görünsün */
 .room-platform-app-modal .room-invite-app-text { margin-top: 0; }
+#room-platform-app-modal .room-modal {
+    background: var(--bg-secondary);
+    color: var(--text-primary);
+}
+#room-platform-app-modal .room-invite-app-icon {
+    color: #e50914 !important;
+    opacity: 1;
+}
+#room-platform-app-modal .room-invite-app-text {
+    color: #b0b0b0 !important;
+}
+#room-platform-app-modal .room-invite-app-btn {
+    background: #e50914 !important;
+    color: #fff !important;
+}
+#room-platform-app-modal .room-modal-close {
+    color: var(--text-secondary);
+}
+#room-platform-app-modal .room-modal-close:hover {
+    color: var(--text-primary);
+}
+#room-platform-app-modal .room-modal {
+    min-height: 200px;
+    background: #1a1a1a;
+}
+.body-room-app #room-platform-app-modal .room-modal {
+    background: #1a1a1a;
+}
 .room-platform-card .room-video-card-info {
     width: 100%;
     padding: 10px 12px;
