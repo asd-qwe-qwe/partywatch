@@ -234,6 +234,7 @@
                             createdAt: Date.now()
                         };
                         setRooms(rooms);
+                        try { sessionStorage.setItem('watch4party_room_displayName', name); } catch (_) {}
                         window.location.href = 'lobby.html?code=' + encodeURIComponent(code);
                         return;
                     }
@@ -256,7 +257,7 @@
                         room.members.push({ name: name, avatar: selectedAvatar, isHost: false });
                         setRooms(rooms);
                     }
-
+                    try { sessionStorage.setItem('watch4party_room_displayName', name); } catch (_) {}
                     window.location.href = 'lobby.html?code=' + encodeURIComponent(codeInput);
                 });
             }
