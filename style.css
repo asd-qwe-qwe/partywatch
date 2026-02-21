@@ -1741,8 +1741,10 @@ select.form-input {
 .room-platform-hulu,
 .room-platform-hbomax,
 .room-platform-custom,
-.room-platform-anime { background: #000; }
+.room-platform-anime { background: #000 !important; }
 .room-platform-custom { border: 1px dashed rgba(255,255,255,0.2); }
+/* Hulu SVG bazen yeşil dolgulu gelir; siyahda görünsün diye */
+.room-platform-hulu .room-platform-logo { filter: brightness(0) invert(1); }
 .room-platform-link {
     text-decoration: none;
     color: inherit;
