@@ -1735,13 +1735,14 @@ select.form-input {
     align-items: center;
     justify-content: center;
 }
-.room-platform-netflix { background: #000; }
-.room-platform-disney { background: #113ccf; }
-.room-platform-prime { background: #00a8e1; }
-.room-platform-hulu { background: #1ce783; }
-.room-platform-hbomax { background: #b535c6; }
-.room-platform-custom { background: var(--bg-glass); color: var(--text-primary); border: 1px dashed var(--card-border); }
-.room-platform-anime { background: linear-gradient(135deg, #ff6b9d 0%, #c44dff 100%); }
+.room-platform-netflix,
+.room-platform-disney,
+.room-platform-prime,
+.room-platform-hulu,
+.room-platform-hbomax,
+.room-platform-custom,
+.room-platform-anime { background: #000; }
+.room-platform-custom { border: 1px dashed rgba(255,255,255,0.2); }
 .room-platform-link {
     text-decoration: none;
     color: inherit;
