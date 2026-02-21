@@ -335,17 +335,16 @@
                     if (dur > ROOM_YT_MAX_DURATION_SEC) {
                         try { player.stopVideo(); } catch (e) {}
                         if (typeof window.roomShowPlatformAppModal === 'function') window.roomShowPlatformAppModal();
-                        if (isNewPlayer) {
-                            var container = document.getElementById('room-video-container');
-                            var placeholder = document.getElementById('room-player-placeholder');
-                            if (container && placeholder) {
-                                container.innerHTML = '';
-                                var wrap = document.createElement('div');
-                                wrap.id = 'room-player-placeholder';
-                                wrap.className = 'room-video-placeholder';
-                                wrap.innerHTML = '<i class="fa-solid fa-download"></i><p>Videos over 40 minutes require the desktop app. Please download the app to watch.</p>';
-                                container.appendChild(wrap);
-                                if (window.roomYtPlayer && window.roomYtPlayer.destroy) window.roomYtPlayer.destroy();
+                        var container = document.getElementById('room-video-container');
+                        if (container) {
+                            container.innerHTML = '';
+                            var wrap = document.createElement('div');
+                            wrap.id = 'room-player-placeholder';
+                            wrap.className = 'room-video-placeholder';
+                            wrap.innerHTML = '<i class="fa-solid fa-download"></i><p>Videos over 40 minutes require the desktop app. Please download the app to watch.</p>';
+                            container.appendChild(wrap);
+                            if (window.roomYtPlayer && typeof window.roomYtPlayer.destroy === 'function') {
+                                try { window.roomYtPlayer.destroy(); } catch (e) {}
                                 window.roomYtPlayer = null;
                             }
                         }
