@@ -110,6 +110,15 @@
                             </div>
                             <div class="room-video-card-info"><div class="room-video-card-title">Anime</div></div>
                         </a>
+                        <div class="room-platform-card room-platform-viewall" id="room-platform-viewall" title="View all platforms">
+                            <div class="room-platform-icon room-platform-viewall-icon">
+                                <div class="room-platform-viewall-inner">
+                                    <span class="room-platform-viewall-label">+50 platforms</span>
+                                    <button type="button" class="room-platform-viewall-btn">View all</button>
+                                </div>
+                            </div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">&nbsp;</div></div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -160,6 +169,15 @@
             <h2 class="room-invite-app-title">App Required</h2>
             <p class="room-invite-app-text">To generate invite links and host room parties seamlessly, please use our desktop application.</p>
             <a href="#" class="room-invite-app-btn watch4party-download-link" target="_blank" rel="noopener">Download Watch4Party App</a>
+        </div>
+    </div>
+    <!-- Platform "Download App" modal (Netflix, Disney+, etc.) -->
+    <div id="room-platform-app-modal" class="room-modal-overlay hidden">
+        <div class="room-modal room-invite-app-modal room-platform-app-modal">
+            <span class="room-modal-close" onclick="roomHideModals()" aria-label="Close">&times;</span>
+            <div class="room-invite-app-icon"><i class="fa-solid fa-download"></i></div>
+            <p class="room-invite-app-text">To use providers other than YouTube, please download the app.</p>
+            <a href="#" class="room-invite-app-btn watch4party-download-link" target="_blank" rel="noopener">Download App</a>
         </div>
     </div>
     <!-- Settings Modal: two-panel (Room Settings / Personal Settings) -->
@@ -752,9 +770,21 @@
                 var id = card.getAttribute('data-video-id');
                 if (id) card.addEventListener('click', function () { roomLoadVideo(id); });
             });
+            function roomShowPlatformAppModal() {
+                var modal = document.getElementById('room-platform-app-modal');
+                if (modal) modal.classList.remove('hidden');
+            }
+            window.roomShowPlatformAppModal = roomShowPlatformAppModal;
             document.querySelectorAll('.room-platform-card[data-platform]').forEach(function (card) {
-                card.addEventListener('click', function () { alert('This platform is coming soon.'); });
+                card.addEventListener('click', function () { roomShowPlatformAppModal(); });
             });
+            var viewallCard = document.getElementById('room-platform-viewall');
+            if (viewallCard) {
+                viewallCard.addEventListener('click', function (e) {
+                    if (e.target.closest('.room-platform-viewall-btn')) roomShowPlatformAppModal();
+                    else roomShowPlatformAppModal();
+                });
+            }
             var customLinkCard = document.getElementById('room-platform-custom-link');
             if (customLinkCard) {
                 customLinkCard.addEventListener('click', function (e) {
