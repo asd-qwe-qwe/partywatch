@@ -19,6 +19,18 @@
         <i class="fa-solid fa-check-circle"></i>
         <span>Changes saved successfully!</span>
     </div>
+    <div id="profile-password-modal" class="profile-password-overlay" aria-hidden="true">
+        <div class="profile-password-panel">
+            <h3 class="profile-password-title">Confirm password</h3>
+            <p class="profile-password-text">To change your email, enter your current password.</p>
+            <input type="password" id="profile-password-input" class="form-input" placeholder="Password" autocomplete="current-password">
+            <p id="profile-password-error" class="profile-password-error" style="display: none;">Wrong password. Try again.</p>
+            <div class="profile-password-actions">
+                <button type="button" class="btn btn-outline profile-password-cancel">Cancel</button>
+                <button type="button" class="btn btn-primary profile-password-ok">OK</button>
+            </div>
+        </div>
+    </div>
     <div id="profile-login-prompt" class="auth-container" style="display: none;">
         <div class="auth-card">
             <p style="color: var(--text-secondary); margin-bottom: 1rem;">You need to be logged in to view your profile.</p>
@@ -262,30 +274,14 @@
             });
 
             var originalEmail = user.email || '';
+            var passwordModal = document.getElementById('profile-password-modal');
+            var passwordInput = document.getElementById('profile-password-input');
+            var passwordError = document.getElementById('profile-password-error');
+            var passwordOk = document.querySelector('.profile-password-ok');
+            var passwordCancel = document.querySelector('.profile-password-cancel');
 
-            document.getElementById('profile-form').addEventListener('submit', function (e) {
-                e.preventDefault();
+            function doSaveProfile() {
                 var newEmail = document.getElementById('profile-email').value.trim();
-                if (newEmail !== originalEmail) {
-                    var pwd = prompt('To change your email, enter your current password:');
-                    if (pwd === null) return;
-                    if (pwd !== user.password) {
-                        alert('Wrong password. Email was not changed.');
-                        return;
-                    }
-                    var users = [];
-                    try {
-                        users = JSON.parse(localStorage.getItem('watch4party_users') || '[]');
-                    } catch (_) {}
-                    var idx = users.findIndex(function (u) { return u.email === originalEmail; });
-                    if (idx !== -1) {
-                        users[idx].email = newEmail;
-                        localStorage.setItem('watch4party_users', JSON.stringify(users));
-                    }
-                    user.email = newEmail;
-                    localStorage.setItem('watch4party_currentUser', JSON.stringify(user));
-                    originalEmail = newEmail;
-                }
                 profileData.displayName = document.getElementById('profile-display-name').value;
                 profileData.email = newEmail;
                 profileData.phone = document.getElementById('profile-phone').value;
@@ -294,12 +290,63 @@
                 localStorage.setItem(PROFILE_KEY, JSON.stringify(profileData));
                 document.getElementById('profile-username').textContent = profileData.displayName || user.username;
                 document.getElementById('profile-avatar').textContent = (profileData.displayName || user.username).charAt(0).toUpperCase();
-
                 var toast = document.getElementById('profile-toast');
                 if (toast) {
                     toast.classList.add('show');
                     setTimeout(function () { toast.classList.remove('show'); }, 3000);
                 }
+            }
+
+            function closePasswordModal() {
+                passwordModal.classList.remove('open');
+                passwordModal.setAttribute('aria-hidden', 'true');
+                passwordError.style.display = 'none';
+                passwordInput.value = '';
+            }
+
+            document.getElementById('profile-form').addEventListener('submit', function (e) {
+                e.preventDefault();
+                var newEmail = document.getElementById('profile-email').value.trim();
+                if (newEmail !== originalEmail) {
+                    passwordModal.classList.add('open');
+                    passwordModal.setAttribute('aria-hidden', 'false');
+                    passwordError.style.display = 'none';
+                    passwordInput.value = '';
+                    passwordInput.focus();
+                    passwordOk.onclick = function () {
+                        var pwd = passwordInput.value;
+                        if (pwd !== user.password) {
+                            passwordError.style.display = 'block';
+                            return;
+                        }
+                        var users = [];
+                        try {
+                            users = JSON.parse(localStorage.getItem('watch4party_users') || '[]');
+                        } catch (_) {}
+                        var idx = users.findIndex(function (u) { return u.email === originalEmail; });
+                        if (idx !== -1) {
+                            users[idx].email = newEmail;
+                            localStorage.setItem('watch4party_users', JSON.stringify(users));
+                        }
+                        user.email = newEmail;
+                        localStorage.setItem('watch4party_currentUser', JSON.stringify(user));
+                        originalEmail = newEmail;
+                        closePasswordModal();
+                        doSaveProfile();
+                    };
+                    return;
+                }
+                doSaveProfile();
+            });
+
+            passwordCancel.addEventListener('click', closePasswordModal);
+            passwordModal.addEventListener('click', function (e) {
+                if (e.target === passwordModal) closePasswordModal();
+            });
+            passwordModal.querySelector('.profile-password-panel').addEventListener('click', function (e) { e.stopPropagation(); });
+            passwordInput.addEventListener('keydown', function (e) {
+                if (e.key === 'Enter') passwordOk.click();
+                if (e.key === 'Escape') closePasswordModal();
             });
         })();
     </script>
