@@ -259,42 +259,67 @@ function checkAuthState() {
                 <span>${escapeHtml(currentUser.username)}</span>
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
-            <div class="profile-dropdown-menu" role="menu">
-                <a href="profile/" class="profile-dropdown-item" role="menuitem"><i class="fa-solid fa-user"></i> Profile</a>
-                <a href="settings/" class="profile-dropdown-item" role="menuitem"><i class="fa-solid fa-sliders"></i> Settings</a>
-                <button type="button" class="profile-dropdown-item logout" role="menuitem"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
-            </div>
         `;
         parent.replaceChild(dropdown, authBtn);
 
+        const overlay = document.createElement('div');
+        overlay.className = 'profile-menu-overlay';
+        overlay.setAttribute('aria-hidden', 'true');
+        overlay.innerHTML = `
+            <div class="profile-menu-panel">
+                <div class="profile-menu-header">
+                    <span class="profile-menu-user">${escapeHtml(currentUser.username)}</span>
+                    <button type="button" class="profile-menu-close" aria-label="Close"><i class="fa-solid fa-times"></i></button>
+                </div>
+                <nav class="profile-menu-nav">
+                    <a href="profile/" class="profile-menu-item"><i class="fa-solid fa-user"></i> Profile</a>
+                    <a href="settings/" class="profile-menu-item"><i class="fa-solid fa-sliders"></i> Settings</a>
+                    <button type="button" class="profile-menu-item profile-menu-logout"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
+                </nav>
+            </div>
+        `;
+        document.body.appendChild(overlay);
+
         const trigger = dropdown.querySelector('.profile-dropdown-trigger');
-        const menu = dropdown.querySelector('.profile-dropdown-menu');
-        const logoutBtn = dropdown.querySelector('.profile-dropdown-item.logout');
+        const closeBtn = overlay.querySelector('.profile-menu-close');
+        const logoutBtn = overlay.querySelector('.profile-menu-logout');
+        const panel = overlay.querySelector('.profile-menu-panel');
+
+        function openMenu() {
+            overlay.classList.add('open');
+            overlay.setAttribute('aria-hidden', 'false');
+            trigger.setAttribute('aria-expanded', 'true');
+        }
+        function closeMenu() {
+            overlay.classList.remove('open');
+            overlay.setAttribute('aria-hidden', 'true');
+            trigger.setAttribute('aria-expanded', 'false');
+        }
 
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            dropdown.classList.toggle('open');
-            trigger.setAttribute('aria-expanded', dropdown.classList.contains('open'));
+            if (overlay.classList.contains('open')) closeMenu();
+            else openMenu();
         });
+
+        closeBtn.addEventListener('click', closeMenu);
+        overlay.addEventListener('click', (e) => {
+            if (e.target === overlay) closeMenu();
+        });
+        panel.addEventListener('click', (e) => e.stopPropagation());
 
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            dropdown.classList.remove('open');
+            closeMenu();
             if (confirm(`Log out as ${currentUser.username}?`)) {
                 localStorage.removeItem('watch4party_currentUser');
                 window.location.reload();
             }
         });
 
-        dropdown.querySelectorAll('.profile-dropdown-item').forEach((item) => {
-            item.addEventListener('click', () => { dropdown.classList.remove('open'); });
+        overlay.querySelectorAll('.profile-menu-item[href]').forEach((link) => {
+            link.addEventListener('click', () => closeMenu());
         });
-
-        document.addEventListener('click', () => {
-            dropdown.classList.remove('open');
-            trigger.setAttribute('aria-expanded', 'false');
-        });
-        menu.addEventListener('click', (e) => e.stopPropagation());
     }
 }
 
