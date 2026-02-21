@@ -176,7 +176,7 @@ ul {
     display: flex;
 }
 
-/* Profile dropdown - sağ üstten açılan menü */
+/* Profile dropdown (logged in) */
 .profile-dropdown {
     position: relative;
 }
@@ -200,97 +200,58 @@ ul {
 .profile-dropdown.open .profile-dropdown-trigger i.fa-chevron-down {
     transform: rotate(180deg);
 }
-
 .profile-dropdown-menu {
     position: absolute;
     top: calc(100% + 0.5rem);
     right: 0;
-    min-width: 260px;
+    min-width: 180px;
+    padding: 0.5rem 0;
     background: var(--bg-secondary);
     border: 1px solid var(--card-border);
-    border-radius: 16px;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
-    display: none;
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.4);
     opacity: 0;
     visibility: hidden;
     transform: translateY(-6px);
     transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
     z-index: 1001;
     pointer-events: none;
-    overflow: hidden;
 }
 .profile-dropdown.open .profile-dropdown-menu {
-    display: block;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
     pointer-events: auto;
 }
-.profile-menu-header {
+.profile-dropdown-item {
     display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 1.25rem 1.5rem;
-    border-bottom: 1px solid var(--card-border);
-    background: rgba(255, 255, 255, 0.03);
-}
-.profile-menu-user {
-    font-weight: 600;
-    font-size: 1.1rem;
-    color: var(--text-primary);
-}
-.profile-menu-close {
-    width: 36px;
-    height: 36px;
-    border: none;
-    border-radius: 50%;
-    background: rgba(255, 255, 255, 0.06);
-    color: var(--text-secondary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    transition: background 0.2s ease, color 0.2s ease;
-}
-.profile-menu-close:hover {
-    background: rgba(229, 9, 20, 0.2);
-    color: var(--accent-red);
-}
-.profile-menu-nav {
-    padding: 0.75rem 0;
-    display: flex;
-    flex-direction: column;
-}
-.profile-menu-item {
-    display: flex;
-    align-items: center;
-    gap: 1rem;
+    gap: 0.6rem;
     width: 100%;
-    padding: 1rem 1.5rem;
+    padding: 0.65rem 1.2rem;
     border: none;
     background: none;
     color: var(--text-primary);
-    font-size: 1rem;
+    font-size: 0.9rem;
     font-weight: 500;
     text-align: left;
     cursor: pointer;
-    transition: background 0.15s ease, color 0.15s ease;
+    transition: background 0.15s ease;
     text-decoration: none;
     font-family: inherit;
 }
-.profile-menu-item:hover {
+.profile-dropdown-item:hover {
     background: rgba(255, 255, 255, 0.06);
 }
-.profile-menu-item i {
-    width: 1.25rem;
-    font-size: 1.1rem;
-    color: var(--accent-red);
+.profile-dropdown-item i {
+    width: 1.1rem;
+    color: var(--text-secondary);
 }
-.profile-menu-logout:hover {
+.profile-dropdown-item.logout:hover {
     background: rgba(229, 9, 20, 0.15);
     color: var(--accent-red);
 }
-.profile-menu-logout i {
+.profile-dropdown-item.logout i {
     color: var(--accent-red);
 }
 
@@ -1320,68 +1281,6 @@ select.form-input {
 }
 .profile-recent-empty p {
     font-size: 0.95rem;
-}
-
-/* Profile password modal - e-posta değişikliği için şifre onayı */
-.profile-password-overlay {
-    position: fixed;
-    inset: 0;
-    z-index: 9999;
-    background: rgba(0, 0, 0, 0.65);
-    backdrop-filter: blur(8px);
-    -webkit-backdrop-filter: blur(8px);
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 2rem;
-    opacity: 0;
-    visibility: hidden;
-    transition: opacity 0.25s ease, visibility 0.25s ease;
-}
-.profile-password-overlay.open {
-    opacity: 1;
-    visibility: visible;
-}
-.profile-password-panel {
-    width: 100%;
-    max-width: 400px;
-    background: var(--bg-secondary);
-    border: 1px solid var(--card-border);
-    border-radius: 20px;
-    padding: 1.75rem 2rem;
-    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
-    transform: scale(0.92);
-    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
-}
-.profile-password-overlay.open .profile-password-panel {
-    transform: scale(1);
-}
-.profile-password-title {
-    font-size: 1.25rem;
-    margin-bottom: 0.5rem;
-    color: var(--text-primary);
-}
-.profile-password-text {
-    color: var(--text-secondary);
-    font-size: 0.95rem;
-    margin-bottom: 1.25rem;
-}
-.profile-password-overlay .form-input {
-    margin-bottom: 0.75rem;
-}
-.profile-password-error {
-    color: var(--accent-red);
-    font-size: 0.875rem;
-    margin-bottom: 1rem;
-}
-.profile-password-actions {
-    display: flex;
-    gap: 0.75rem;
-    justify-content: flex-end;
-    margin-top: 1.25rem;
-}
-.profile-password-actions .btn {
-    min-width: 100px;
 }
 
 /* Profile toast notification - ekran ortası, animasyonlu */
