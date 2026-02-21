@@ -1735,15 +1735,34 @@ select.form-input {
     align-items: center;
     justify-content: center;
 }
+/* Tüm platform ikon alanları siyah arka plan */
+.room-platforms-grid .room-platform-icon {
+    background: #000 !important;
+    background-color: #000 !important;
+    position: relative;
+}
+.room-platforms-grid .room-platform-icon::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: #000;
+    z-index: 0;
+}
+.room-platforms-grid .room-platform-icon .room-platform-logo,
+.room-platforms-grid .room-platform-icon .room-platform-fallback,
+.room-platforms-grid .room-platform-icon > i {
+    position: relative;
+    z-index: 1;
+}
 .room-platform-netflix,
 .room-platform-disney,
 .room-platform-prime,
 .room-platform-hulu,
 .room-platform-hbomax,
 .room-platform-custom,
-.room-platform-anime { background: #000 !important; }
+.room-platform-anime { background: #000 !important; background-color: #000 !important; }
 .room-platform-custom { border: 1px dashed rgba(255,255,255,0.2); }
-/* Hulu SVG bazen yeşil dolgulu gelir; siyahda görünsün diye */
+/* Hulu logosu siyah zemin üzerinde beyaz görünsün */
 .room-platform-hulu .room-platform-logo { filter: brightness(0) invert(1); }
 .room-platform-link {
     text-decoration: none;
