@@ -467,7 +467,16 @@
         }
         function roomShowHelp() { document.getElementById('room-help-modal').classList.remove('hidden'); }
         function roomHideModals() {
-            document.querySelectorAll('.room-modal-overlay').forEach(function (el) { el.classList.add('hidden'); });
+            var open = document.querySelectorAll('.room-modal-overlay:not(.hidden):not(.closing)');
+            if (open.length === 0) return;
+            open.forEach(function (el) {
+                el.classList.add('closing');
+                el.addEventListener('animationend', function onClose() {
+                    el.removeEventListener('animationend', onClose);
+                    el.classList.remove('closing');
+                    el.classList.add('hidden');
+                }, { once: true });
+            });
         }
 
         async function roomToggleCamera() {
