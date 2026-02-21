@@ -1141,10 +1141,18 @@ select.form-input {
     display: inline-flex;
     align-items: center;
     gap: 0.4rem;
-    color: #ffd700;
     font-size: 0.9rem;
     font-weight: 600;
     margin-bottom: 0.25rem;
+}
+.profile-hero-badge--starter {
+    color: #9ca3af;
+}
+.profile-hero-badge--pro {
+    color: var(--accent-red);
+}
+.profile-hero-badge--ultimate {
+    color: #ffd700;
 }
 .profile-hero-date {
     font-size: 0.85rem;
