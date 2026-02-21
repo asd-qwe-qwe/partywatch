@@ -132,14 +132,74 @@
             <a href="#" class="room-invite-app-btn watch4party-download-link" target="_blank" rel="noopener">Download Watch4Party App</a>
         </div>
     </div>
-    <!-- Settings Modal -->
+    <!-- Settings Modal: two-panel (Room Settings / Personal Settings) -->
     <div id="room-settings-modal" class="room-modal-overlay hidden">
-        <div class="room-modal large">
+        <div class="room-modal room-settings-modal">
             <span class="room-modal-close" onclick="roomHideModals()" aria-label="Close">&times;</span>
-            <div class="room-modal-content">
-                <h2>Room settings</h2>
-                <p>Invite friends from the desktop app.</p>
-                <a href="../../index.html" class="room-download-link"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+            <div class="room-settings-panel">
+                <nav class="room-settings-nav" aria-label="Settings tabs">
+                    <button type="button" class="room-settings-nav-item active" data-tab="room" id="room-settings-tab-room">Room Settings</button>
+                    <button type="button" class="room-settings-nav-item" data-tab="personal" id="room-settings-tab-personal">Personal Settings</button>
+                </nav>
+                <div class="room-settings-body">
+                    <div class="room-settings-pane active" id="room-settings-pane-room" role="tabpanel" aria-labelledby="room-settings-tab-room">
+                        <h2>Room Settings</h2>
+                        <div class="room-settings-field">
+                            <label class="room-settings-label" for="room-settings-name">Room Name</label>
+                            <div class="room-settings-row">
+                                <input type="text" id="room-settings-name" class="room-settings-input" placeholder="Temporary Room" maxlength="64">
+                                <button type="button" class="room-settings-save-btn" id="room-settings-save-name">Save</button>
+                            </div>
+                            <p class="room-settings-hint">Temporary rooms will be deleted after 24 hours.</p>
+                        </div>
+                        <div class="room-settings-field">
+                            <label class="room-settings-label" for="room-settings-bg-color">Background Color</label>
+                            <div class="room-settings-row room-settings-color-row">
+                                <input type="color" id="room-settings-bg-color" class="room-settings-color" value="#050505" title="Background color">
+                            </div>
+                        </div>
+                        <div class="room-settings-field">
+                            <label class="room-settings-label">Background Image</label>
+                            <div class="room-settings-bg-options">
+                                <button type="button" class="room-settings-bg-opt active" data-bg="none">None</button>
+                                <button type="button" class="room-settings-bg-opt" data-bg="coral" style="background:#e8a598;"></button>
+                                <button type="button" class="room-settings-bg-opt" data-bg="lavender" style="background:#c4b5fd;"></button>
+                                <button type="button" class="room-settings-bg-opt" data-bg="light" style="background:#f5f5f5;"></button>
+                            </div>
+                            <button type="button" class="room-settings-upload-btn" id="room-settings-upload-bg">Upload Image (Max 5MB)</button>
+                        </div>
+                        <div class="room-settings-footer">
+                            <a href="#" class="room-settings-footer-link">Contact – Site notice / Impressum</a>
+                            <a href="#" class="room-settings-footer-link">Privacy settings</a>
+                            <a href="#" class="room-settings-footer-link">Terms of Use</a>
+                        </div>
+                    </div>
+                    <div class="room-settings-pane" id="room-settings-pane-personal" role="tabpanel" aria-labelledby="room-settings-tab-personal">
+                        <h2>Personal Settings</h2>
+                        <div class="room-settings-field">
+                            <label class="room-settings-checkbox-label">
+                                <input type="checkbox" id="room-settings-push" class="room-settings-checkbox"> Receive push notifications
+                            </label>
+                        </div>
+                        <h3 class="room-settings-subtitle">General Settings</h3>
+                        <div class="room-settings-field">
+                            <label class="room-settings-checkbox-label">
+                                <input type="checkbox" id="room-settings-sound" class="room-settings-checkbox" checked> Notification sound
+                            </label>
+                        </div>
+                        <div class="room-settings-field">
+                            <label class="room-settings-checkbox-label">
+                                <input type="checkbox" id="room-settings-status" class="room-settings-checkbox" checked> Show status messages
+                            </label>
+                        </div>
+                        <div class="room-settings-field">
+                            <label class="room-settings-label" for="room-settings-chat-color">Your chat color</label>
+                            <div class="room-settings-row room-settings-color-row">
+                                <input type="color" id="room-settings-chat-color" class="room-settings-color" value="#ffeb3b" title="Chat color">
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -295,7 +355,7 @@
             var list = document.getElementById('room-chat-messages');
             if (!list) return;
             var div = document.createElement('div');
-            div.className = 'room-chat-msg';
+            div.className = 'room-chat-msg' + (msg.user === roomGetDisplayName() ? ' own' : '');
             div.innerHTML = '<span class="time">[' + roomEscapeHtml(msg.time) + ']</span><span class="user">' + roomEscapeHtml(msg.user) + ':</span> ' + roomEscapeHtml(msg.text);
             list.appendChild(div);
             list.scrollTop = list.scrollHeight;
@@ -445,6 +505,108 @@
             navigator.clipboard.writeText(url).then(function () { alert('Invite link copied!'); });
         }
 
+        function roomSettingsKey(k) { return 'watch4party_' + k + (window.roomCode ? '_' + window.roomCode : ''); }
+        function roomSettingsPersonalKey(k) { return 'watch4party_personal_' + k; }
+
+        function initRoomSettings() {
+            var code = window.roomCode;
+            var navItems = document.querySelectorAll('.room-settings-nav-item');
+            var panes = document.querySelectorAll('.room-settings-pane');
+            navItems.forEach(function (btn) {
+                btn.addEventListener('click', function () {
+                    var tab = btn.getAttribute('data-tab');
+                    navItems.forEach(function (b) { b.classList.remove('active'); });
+                    panes.forEach(function (p) { p.classList.remove('active'); });
+                    btn.classList.add('active');
+                    var pane = document.getElementById('room-settings-pane-' + tab);
+                    if (pane) pane.classList.add('active');
+                });
+            });
+
+            var nameInput = document.getElementById('room-settings-name');
+            var saveBtn = document.getElementById('room-settings-save-name');
+            if (code) {
+                try {
+                    var savedName = localStorage.getItem(roomSettingsKey('room_name'));
+                    if (savedName && nameInput) nameInput.value = savedName;
+                } catch (_) {}
+            }
+            if (saveBtn && nameInput) {
+                saveBtn.addEventListener('click', function () {
+                    var name = (nameInput.value || '').trim() || 'Temporary Room';
+                    try {
+                        if (code) localStorage.setItem(roomSettingsKey('room_name'), name);
+                        var nameText = document.getElementById('room-name-text');
+                        if (nameText) nameText.textContent = name;
+                        alert('Saved.');
+                    } catch (_) { alert('Could not save.'); }
+                });
+            }
+
+            var bgColor = document.getElementById('room-settings-bg-color');
+            if (bgColor) {
+                try {
+                    var savedBg = localStorage.getItem(roomSettingsKey('room_bg_color'));
+                    if (savedBg) { bgColor.value = savedBg; roomApplyBgColor(savedBg); }
+                } catch (_) {}
+                bgColor.addEventListener('input', function () {
+                    var v = bgColor.value;
+                    roomApplyBgColor(v);
+                    try { if (code) localStorage.setItem(roomSettingsKey('room_bg_color'), v); } catch (_) {}
+                });
+            }
+
+            var bgOpts = document.querySelectorAll('.room-settings-bg-opt');
+            bgOpts.forEach(function (opt) {
+                opt.addEventListener('click', function () {
+                    bgOpts.forEach(function (o) { o.classList.remove('active'); });
+                    opt.classList.add('active');
+                    try { if (code) localStorage.setItem(roomSettingsKey('room_bg_image'), opt.getAttribute('data-bg') || 'none'); } catch (_) {}
+                });
+            });
+            try {
+                var savedBgImg = code && localStorage.getItem(roomSettingsKey('room_bg_image'));
+                if (savedBgImg) bgOpts.forEach(function (o) { if (o.getAttribute('data-bg') === savedBgImg) { bgOpts.forEach(function (x) { x.classList.remove('active'); }); o.classList.add('active'); } });
+            } catch (_) {}
+
+            var uploadBtn = document.getElementById('room-settings-upload-bg');
+            if (uploadBtn) uploadBtn.addEventListener('click', function () { alert('Image upload is available in the desktop app.'); });
+
+            var pushCb = document.getElementById('room-settings-push');
+            var soundCb = document.getElementById('room-settings-sound');
+            var statusCb = document.getElementById('room-settings-status');
+            var chatColor = document.getElementById('room-settings-chat-color');
+            function loadPersonal() {
+                try {
+                    var p = localStorage.getItem(roomSettingsPersonalKey('push'));
+                    if (pushCb && p !== null) pushCb.checked = p === '1';
+                    var s = localStorage.getItem(roomSettingsPersonalKey('sound'));
+                    if (soundCb && s !== null) soundCb.checked = s === '1';
+                    var t = localStorage.getItem(roomSettingsPersonalKey('status'));
+                    if (statusCb && t !== null) statusCb.checked = t === '1';
+                    var c = localStorage.getItem(roomSettingsPersonalKey('chat_color'));
+                    if (c && chatColor) chatColor.value = c;
+                    roomApplyChatColor(chatColor ? chatColor.value : '#ffeb3b');
+                } catch (_) {}
+            }
+            loadPersonal();
+            if (pushCb) pushCb.addEventListener('change', function () { try { localStorage.setItem(roomSettingsPersonalKey('push'), pushCb.checked ? '1' : '0'); } catch (_) {} });
+            if (soundCb) soundCb.addEventListener('change', function () { try { localStorage.setItem(roomSettingsPersonalKey('sound'), soundCb.checked ? '1' : '0'); } catch (_) {} });
+            if (statusCb) statusCb.addEventListener('change', function () { try { localStorage.setItem(roomSettingsPersonalKey('status'), statusCb.checked ? '1' : '0'); } catch (_) {} });
+            if (chatColor) chatColor.addEventListener('input', function () {
+                var v = chatColor.value;
+                roomApplyChatColor(v);
+                try { localStorage.setItem(roomSettingsPersonalKey('chat_color'), v); } catch (_) {}
+            });
+        }
+        function roomApplyBgColor(hex) {
+            var el = document.querySelector('.room-app-container');
+            if (el) el.style.backgroundColor = hex || '';
+        }
+        function roomApplyChatColor(hex) {
+            document.documentElement.style.setProperty('--room-chat-user-color', hex || 'var(--accent-red)');
+        }
+
         function init() {
             document.querySelectorAll('.watch4party-download-link').forEach(function (a) { a.href = window.WATCH4PARTY_DOWNLOAD_URL; });
             var code = getCode();
@@ -510,6 +672,14 @@
                 var id = card.getAttribute('data-video-id');
                 if (id) card.addEventListener('click', function () { roomLoadVideo(id); });
             });
+
+            initRoomSettings();
+            try {
+                var bg = localStorage.getItem(roomSettingsKey('room_bg_color'));
+                if (bg) roomApplyBgColor(bg);
+                var cc = localStorage.getItem(roomSettingsPersonalKey('chat_color'));
+                if (cc) roomApplyChatColor(cc);
+            } catch (_) {}
         }
 
         if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init);
