@@ -320,6 +320,42 @@
             }
         };
 
+        var ROOM_YT_MAX_DURATION_SEC = 40 * 60;
+
+        function roomCheckYoutubeDuration(player, isNewPlayer) {
+            if (!player || typeof player.getDuration !== 'function') return;
+            var attempts = 0;
+            var maxAttempts = 50;
+            var iv = setInterval(function () {
+                attempts++;
+                var dur = 0;
+                try { dur = player.getDuration(); } catch (e) {}
+                if (dur > 0) {
+                    clearInterval(iv);
+                    if (dur > ROOM_YT_MAX_DURATION_SEC) {
+                        try { player.stopVideo(); } catch (e) {}
+                        if (typeof window.roomShowPlatformAppModal === 'function') window.roomShowPlatformAppModal();
+                        if (isNewPlayer) {
+                            var container = document.getElementById('room-video-container');
+                            var placeholder = document.getElementById('room-player-placeholder');
+                            if (container && placeholder) {
+                                container.innerHTML = '';
+                                var wrap = document.createElement('div');
+                                wrap.id = 'room-player-placeholder';
+                                wrap.className = 'room-video-placeholder';
+                                wrap.innerHTML = '<i class="fa-solid fa-download"></i><p>Videos over 40 minutes require the desktop app. Please download the app to watch.</p>';
+                                container.appendChild(wrap);
+                                if (window.roomYtPlayer && window.roomYtPlayer.destroy) window.roomYtPlayer.destroy();
+                                window.roomYtPlayer = null;
+                            }
+                        }
+                    }
+                    return;
+                }
+                if (attempts >= maxAttempts) clearInterval(iv);
+            }, 300);
+        }
+
         function roomLoadVideo(videoId) {
             var container = document.getElementById('room-video-container');
             var placeholder = document.getElementById('room-player-placeholder');
@@ -328,6 +364,7 @@
             if (window.roomYtPlayer && typeof window.roomYtPlayer.loadVideoById === 'function') {
                 window.roomYtPlayer.loadVideoById(videoId);
                 roomAddToPlaylist(videoId);
+                roomCheckYoutubeDuration(window.roomYtPlayer, false);
                 return;
             }
             if (window.YT && window.YT.Player) {
@@ -339,7 +376,13 @@
                     width: '100%',
                     videoId: videoId,
                     playerVars: { playsinline: 1, autoplay: 1, rel: 0, modestbranding: 1 },
-                    events: { onReady: function (e) { e.target.playVideo(); }, onError: function (e) { console.warn('YT error', e.data); } }
+                    events: {
+                        onReady: function (e) {
+                            e.target.playVideo();
+                            roomCheckYoutubeDuration(e.target, true);
+                        },
+                        onError: function (e) { console.warn('YT error', e.data); }
+                    }
                 });
                 return;
             }
