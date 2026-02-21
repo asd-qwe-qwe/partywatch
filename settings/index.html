@@ -14,49 +14,66 @@
     <link rel="stylesheet" href="../style.css">
 </head>
 
-<body>
-    <div class="auth-container">
-        <div class="auth-card" style="max-width: 480px; text-align: left;">
-            <h2 class="auth-title">Settings</h2>
-            <p class="auth-subtitle">Preferences and options</p>
-            <div id="settings-content">
-                <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem;">
-                    <label class="form-label" style="margin-bottom: 0;">Theme</label>
-                    <button type="button" id="theme-toggle" class="btn btn-outline" style="padding: 0.5rem 1rem;" aria-label="Toggle theme">
-                        <i class="fa-solid fa-moon"></i> <span id="theme-label">Dark</span>
-                    </button>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Notifications</label>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem;">Email and in-app notifications. Coming soon.</p>
-                </div>
-                <div class="form-group">
-                    <label class="form-label">Language</label>
-                    <p style="color: var(--text-secondary); font-size: 0.9rem;">App language. Coming soon.</p>
-                </div>
-            </div>
-            <div id="settings-login-prompt" style="display: none; text-align: center; margin: 1.5rem 0;">
-                <p style="color: var(--text-secondary); margin-bottom: 1rem;">You need to be logged in to access settings.</p>
-                <a href="../login/" class="btn btn-primary">Sign In</a>
-            </div>
+<body class="profile-page">
+    <div id="settings-login-prompt" class="auth-container" style="display: none;">
+        <div class="auth-card">
+            <p style="color: var(--text-secondary); margin-bottom: 1rem;">You need to be logged in to access settings.</p>
+            <a href="../login/" class="btn btn-primary">Sign In</a>
             <div class="auth-footer" style="margin-top: 2rem;">
                 <a href="../" style="color: var(--text-secondary); font-size: 0.8rem;"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
             </div>
         </div>
     </div>
+
+    <div id="settings-app" class="profile-app">
+        <header class="profile-header">
+            <a href="../" class="profile-back"><i class="fa-solid fa-arrow-left"></i> Back</a>
+            <h1 class="profile-title">Settings</h1>
+            <span></span>
+        </header>
+
+        <main class="profile-main container">
+            <section class="profile-card">
+                <h3 class="profile-card-title"><i class="fa-solid fa-palette"></i> Theme</h3>
+                <div class="form-group" style="display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap;">
+                    <span class="form-label" style="margin-bottom: 0;">Appearance</span>
+                    <button type="button" id="theme-toggle" class="btn btn-outline" style="padding: 0.6rem 1.2rem;" aria-label="Toggle theme">
+                        <i class="fa-solid fa-moon"></i> <span id="theme-label">Dark</span>
+                    </button>
+                </div>
+            </section>
+
+            <section class="profile-card">
+                <h3 class="profile-card-title"><i class="fa-solid fa-bell"></i> Notifications</h3>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">Email and in-app notifications. Coming soon.</p>
+            </section>
+
+            <section class="profile-card">
+                <h3 class="profile-card-title"><i class="fa-solid fa-language"></i> Language</h3>
+                <p style="color: var(--text-secondary); font-size: 0.95rem;">App language. Coming soon.</p>
+            </section>
+
+            <div class="auth-footer" style="margin-top: 1.5rem;">
+                <a href="../" style="color: var(--text-secondary); font-size: 0.8rem;"><i class="fa-solid fa-arrow-left"></i> Back to Home</a>
+            </div>
+        </main>
+    </div>
+
     <script>
         (function () {
             var user = null;
             try {
                 user = JSON.parse(localStorage.getItem('watch4party_currentUser'));
             } catch (_) {}
-            var content = document.getElementById('settings-content');
-            var prompt = document.getElementById('settings-login-prompt');
+            var loginPrompt = document.getElementById('settings-login-prompt');
+            var app = document.getElementById('settings-app');
             if (user && user.username) {
-                if (prompt) prompt.style.display = 'none';
+                if (loginPrompt) loginPrompt.style.display = 'none';
+                if (app) app.style.display = 'block';
             } else {
-                if (content) content.style.display = 'none';
-                if (prompt) prompt.style.display = 'block';
+                if (loginPrompt) loginPrompt.style.display = 'flex';
+                if (app) app.style.display = 'none';
+                return;
             }
             var html = document.documentElement;
             var themeToggle = document.getElementById('theme-toggle');
@@ -65,9 +82,7 @@
             var saved = localStorage.getItem('theme') || 'dark';
             html.setAttribute('data-theme', saved);
             if (themeLabel) themeLabel.textContent = saved === 'dark' ? 'Dark' : 'Light';
-            if (icon) {
-                icon.className = saved === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
-            }
+            if (icon) icon.className = saved === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
             if (themeToggle) {
                 themeToggle.addEventListener('click', function () {
                     var current = html.getAttribute('data-theme');
