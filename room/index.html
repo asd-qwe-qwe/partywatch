@@ -235,6 +235,7 @@
                         };
                         setRooms(rooms);
                         try { sessionStorage.setItem('watch4party_room_displayName', name); } catch (_) {}
+                        // Watch page URL: room/watch/?code=... (room/watch/index.html)
                         window.location.href = 'watch/?code=' + encodeURIComponent(code);
                         return;
                     }
@@ -259,6 +260,7 @@
                         setRooms(rooms);
                     }
                     try { sessionStorage.setItem('watch4party_room_displayName', name); } catch (_) {}
+                    // Watch page URL: room/watch/?code=...
                     window.location.href = 'watch/?code=' + encodeURIComponent(codeInput);
                 });
             }
