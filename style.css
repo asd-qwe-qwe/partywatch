@@ -728,6 +728,92 @@ select.form-input {
     padding-right: 2.5rem;
 }
 
+/* Country dropdown - siyah kirmizi tema */
+.country-dropdown {
+    position: relative;
+}
+.country-dropdown-trigger {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    text-align: left;
+    cursor: pointer;
+    background: #0a0a0a !important;
+    border: 1px solid var(--accent-red);
+    color: var(--text-primary);
+    padding: 0.9rem 1.2rem;
+    border-radius: 12px;
+    font-size: 1rem;
+    font-family: inherit;
+}
+.country-dropdown-trigger:hover {
+    border-color: var(--accent-red);
+    background: rgba(229, 9, 20, 0.08) !important;
+}
+.country-dropdown-trigger i {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+    transition: transform 0.2s ease;
+}
+.country-dropdown.open .country-dropdown-trigger i {
+    transform: rotate(180deg);
+}
+.country-dropdown-panel {
+    position: absolute;
+    top: calc(100% + 4px);
+    left: 0;
+    right: 0;
+    background: #0a0a0a;
+    border: 1px solid var(--accent-red);
+    border-radius: 12px;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5);
+    opacity: 0;
+    visibility: hidden;
+    transform: translateY(-4px);
+    transition: opacity 0.2s ease, transform 0.2s ease, visibility 0.2s;
+    z-index: 100;
+    overflow: hidden;
+    pointer-events: none;
+}
+.country-dropdown.open .country-dropdown-panel {
+    opacity: 1;
+    visibility: visible;
+    transform: translateY(0);
+    pointer-events: auto;
+}
+.country-dropdown-header {
+    background: var(--accent-red);
+    color: #fff;
+    padding: 0.75rem 1.2rem;
+    font-weight: 600;
+    font-size: 0.95rem;
+}
+.country-dropdown-list {
+    max-height: 220px;
+    overflow-y: auto;
+    padding: 0.25rem 0;
+}
+.country-dropdown-list::-webkit-scrollbar {
+    width: 8px;
+}
+.country-dropdown-list::-webkit-scrollbar-track {
+    background: #0a0a0a;
+}
+.country-dropdown-list::-webkit-scrollbar-thumb {
+    background: var(--accent-red);
+    border-radius: 4px;
+}
+.country-dropdown-option {
+    padding: 0.65rem 1.2rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+.country-dropdown-option:hover {
+    background: rgba(229, 9, 20, 0.2);
+}
+
 /* Password strength indicator */
 .password-strength {
     margin-top: 0.5rem;
