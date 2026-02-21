@@ -117,6 +117,33 @@ function initAuth() {
 
     // Handle Register
     if (isRegisterPage) {
+        // Password strength indicator
+        const strengthFill = document.getElementById('passwordStrengthFill');
+        const strengthLabel = document.getElementById('passwordStrengthLabel');
+        if (passwordInput && strengthFill && strengthLabel) {
+            function updatePasswordStrength() {
+                const p = passwordInput.value;
+                let score = 0;
+                if (p.length >= 8) score += 20;
+                if (p.length >= 12) score += 15;
+                if (p.length >= 16) score += 10;
+                if (/[a-z]/.test(p)) score += 15;
+                if (/[A-Z]/.test(p)) score += 15;
+                if (/\d/.test(p)) score += 15;
+                if (/[^a-zA-Z0-9]/.test(p)) score += 10;
+
+                const level = score < 25 ? 'weak' : score < 50 ? 'fair' : score < 75 ? 'good' : 'strong';
+                const labels = { weak: 'Weak', fair: 'Fair', good: 'Good', strong: 'Strong' };
+                const width = Math.min(100, score);
+
+                strengthFill.style.width = width + '%';
+                strengthFill.className = 'password-strength-fill ' + (p.length ? level : '');
+                strengthLabel.textContent = p.length ? labels[level] : '';
+            }
+            passwordInput.addEventListener('input', updatePasswordStrength);
+            passwordInput.addEventListener('focus', updatePasswordStrength);
+        }
+
         authForm.addEventListener('submit', (e) => {
             e.preventDefault();
             const username = usernameInput.value;
@@ -124,6 +151,10 @@ function initAuth() {
             const password = passwordInput.value;
             const confirmPass = confirmPasswordInput.value;
 
+            if (password.length < 8) {
+                alert("Password must be at least 8 characters!");
+                return;
+            }
             if (password !== confirmPass) {
                 alert("Passwords do not match!");
                 return;
