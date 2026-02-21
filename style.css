@@ -1692,8 +1692,10 @@ select.form-input {
     padding: 0;
 }
 .room-platform-card {
-    min-width: 140px;
-    max-width: 160px;
+    width: 150px;
+    min-width: 150px;
+    max-width: 150px;
+    flex-shrink: 0;
     background: var(--bg-secondary);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-md);
@@ -1714,7 +1716,8 @@ select.form-input {
 }
 .room-platform-icon {
     width: 100%;
-    aspect-ratio: 16/9;
+    height: 84px;
+    min-height: 84px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -1772,6 +1775,46 @@ select.form-input {
     text-decoration: none;
     color: inherit;
 }
+
+/* +50 platforms / View all card - aynı boyutta, en sağda */
+.room-platform-viewall-icon {
+    background: #000 !important;
+}
+.room-platform-viewall-inner {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+}
+.room-platform-viewall-label {
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: #fff;
+    text-align: center;
+}
+.room-platform-viewall-btn {
+    background: var(--accent-red);
+    color: #fff;
+    border: none;
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+.room-platform-viewall-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-2px);
+}
+.room-platform-viewall-btn:active {
+    transform: translateY(0);
+}
+
+/* Platform "Download App" modal - başlık yok, sadece ikon + metin + buton */
+.room-platform-app-modal .room-invite-app-text { margin-top: 0; }
 .room-platform-card .room-video-card-info {
     width: 100%;
     padding: 10px 12px;
