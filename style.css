@@ -1787,12 +1787,21 @@ select.form-input {
     color: inherit;
 }
 
-/* +50 platforms kartı - diğer platform kartlarıyla aynı yapı (ikon + başlık) */
+/* +50 platforms kartı - üstte +50 platforms, altta View all */
 .room-platform-viewall-icon {
     background: #000 !important;
+    flex-direction: column;
+    gap: 6px;
+}
+.room-platform-viewall-top {
+    font-size: 0.7rem;
+    font-weight: 700;
+    color: rgba(255,255,255,0.95);
+    line-height: 1;
+    text-align: center;
 }
 .room-platform-viewall-icon i {
-    font-size: 2rem;
+    font-size: 1.75rem;
     color: rgba(255,255,255,0.9);
 }
 
