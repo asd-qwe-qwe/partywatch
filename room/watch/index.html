@@ -62,22 +62,37 @@
                         <p>Paste a YouTube link or search to start watching</p>
                     </div>
                 </div>
-                <div class="room-video-grid" id="room-video-grid">
-                    <div class="room-video-card" data-video-id="dQw4w9WgXcQ">
-                        <div class="room-video-card-thumb" style="background-image:url('https://img.youtube.com/vi/dQw4w9WgXcQ/mqdefault.jpg')"></div>
-                        <div class="room-video-card-info"><div class="room-video-card-title">Sample</div></div>
-                    </div>
-                    <div class="room-video-card" data-video-id="LXb3EKWsInQ">
-                        <div class="room-video-card-thumb" style="background-image:url('https://img.youtube.com/vi/LXb3EKWsInQ/mqdefault.jpg')"></div>
-                        <div class="room-video-card-info"><div class="room-video-card-title">Nature</div></div>
-                    </div>
-                    <div class="room-video-card" data-video-id="q76bMs-NwRk">
-                        <div class="room-video-card-thumb" style="background-image:url('https://img.youtube.com/vi/q76bMs-NwRk/mqdefault.jpg')"></div>
-                        <div class="room-video-card-info"><div class="room-video-card-title">Rain</div></div>
-                    </div>
-                    <div class="room-video-card" data-video-id="M5QY2_8704o">
-                        <div class="room-video-card-thumb" style="background-image:url('https://img.youtube.com/vi/M5QY2_8704o/mqdefault.jpg')"></div>
-                        <div class="room-video-card-info"><div class="room-video-card-title">Study</div></div>
+                <div class="room-platforms-section">
+                    <h3 class="room-platforms-title">Platforms</h3>
+                    <div class="room-video-grid room-platforms-grid" id="room-video-grid">
+                        <div class="room-platform-card" data-platform="netflix" title="Coming soon">
+                            <div class="room-platform-icon room-platform-netflix"><i class="fa-solid fa-film"></i></div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">Netflix</div></div>
+                        </div>
+                        <div class="room-platform-card" data-platform="disney" title="Coming soon">
+                            <div class="room-platform-icon room-platform-disney"><i class="fa-solid fa-tv"></i></div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">Disney+</div></div>
+                        </div>
+                        <div class="room-platform-card" data-platform="prime" title="Coming soon">
+                            <div class="room-platform-icon room-platform-prime"><i class="fa-brands fa-amazon"></i></div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">Prime Video</div></div>
+                        </div>
+                        <div class="room-platform-card" data-platform="hulu" title="Coming soon">
+                            <div class="room-platform-icon room-platform-hulu"><i class="fa-solid fa-play-circle"></i></div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">Hulu</div></div>
+                        </div>
+                        <div class="room-platform-card" data-platform="hbomax" title="Coming soon">
+                            <div class="room-platform-icon room-platform-hbomax"><i class="fa-solid fa-film"></i></div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">HBO Max</div></div>
+                        </div>
+                        <div class="room-platform-card" data-action="custom-link" id="room-platform-custom-link" title="Paste a video link">
+                            <div class="room-platform-icon room-platform-custom"><i class="fa-solid fa-link"></i></div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">Custom video link</div></div>
+                        </div>
+                        <a href="https://www.watch2gether.com/" target="_blank" rel="noopener" class="room-platform-card room-platform-link" title="Watch anime together">
+                            <div class="room-platform-icon room-platform-anime"><i class="fa-solid fa-dragon"></i></div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">Watch Anime Together</div></div>
+                        </a>
                     </div>
                 </div>
             </div>
@@ -720,6 +735,20 @@
                 var id = card.getAttribute('data-video-id');
                 if (id) card.addEventListener('click', function () { roomLoadVideo(id); });
             });
+            document.querySelectorAll('.room-platform-card[data-platform]').forEach(function (card) {
+                card.addEventListener('click', function () { alert('This platform is coming soon.'); });
+            });
+            var customLinkCard = document.getElementById('room-platform-custom-link');
+            if (customLinkCard) {
+                customLinkCard.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    var searchInput = document.getElementById('room-search-input');
+                    if (searchInput) {
+                        searchInput.focus();
+                        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                    }
+                });
+            }
 
             initRoomSettings();
             try {
