@@ -1834,6 +1834,40 @@ select.form-input {
 }
 .room-modal.large { max-width: 560px; }
 
+/* Room sayfasındaki tüm modallar tema uyumlu (koyu) */
+.body-room-app .room-modal-overlay .room-modal {
+    background: var(--bg-secondary);
+    border: 1px solid var(--card-border);
+    color: var(--text-primary);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4);
+}
+.body-room-app .room-modal h2 {
+    color: var(--text-primary);
+    margin-bottom: 0.75rem;
+    font-size: 1.35rem;
+}
+.body-room-app .room-modal p {
+    color: var(--text-secondary);
+    margin-bottom: 1rem;
+    font-size: 0.95rem;
+    line-height: 1.5;
+}
+.body-room-app .room-modal .room-modal-close {
+    color: var(--text-secondary);
+}
+.body-room-app .room-modal .room-modal-close:hover {
+    color: var(--text-primary);
+}
+.room-modal-content {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+}
+.room-modal-content .room-download-link {
+    margin-top: 0.25rem;
+}
+
 /* Invite "App Required" modal - tema uyumlu, hizalı */
 .room-invite-app-modal {
     background: var(--bg-secondary);
