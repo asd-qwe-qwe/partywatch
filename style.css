@@ -1745,8 +1745,9 @@ select.form-input {
     position: fixed;
     bottom: 80px;
     right: 340px;
-    width: 340px;
-    height: 420px;
+    width: 360px;
+    height: 460px;
+    max-height: calc(100vh - 120px);
     background: var(--bg-secondary);
     border: 1px solid var(--card-border);
     border-radius: var(--radius-lg);
@@ -1758,30 +1759,108 @@ select.form-input {
 }
 .room-chat-overlay.hidden { display: none !important; }
 .room-chat-header {
-    padding: 10px 14px;
+    flex-shrink: 0;
+    padding: 12px 14px;
     border-bottom: 1px solid var(--card-border);
-    font-weight: 700;
     display: flex;
     justify-content: space-between;
     align-items: center;
+    background: var(--bg-primary);
 }
-.room-chat-header .fa-xmark { cursor: pointer; color: var(--text-secondary); }
+.room-chat-title {
+    font-weight: 700;
+    font-size: 1rem;
+    color: var(--text-primary);
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+.room-chat-title i {
+    color: var(--accent-red);
+    font-size: 1.1rem;
+}
+.room-chat-close {
+    width: 32px;
+    height: 32px;
+    border: none;
+    background: none;
+    border-radius: var(--radius-sm);
+    color: var(--text-secondary);
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: color 0.2s ease, background 0.2s ease;
+}
+.room-chat-close:hover {
+    color: var(--accent-red);
+    background: rgba(229, 9, 20, 0.12);
+}
 .room-chat-messages {
     flex: 1;
     overflow-y: auto;
+    overflow-x: hidden;
     padding: 12px;
     font-size: 0.9rem;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 0;
 }
-.room-chat-msg { margin-bottom: 10px; line-height: 1.4; }
-.room-chat-msg .user { color: var(--accent-red); font-weight: 600; margin-right: 4px; }
-.room-chat-msg.own .user { color: var(--room-chat-user-color, var(--accent-red)); }
-.room-chat-msg .time { color: var(--text-secondary); font-size: 0.75rem; margin-right: 6px; }
+.room-chat-msg {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    line-height: 1.4;
+}
+.room-chat-msg.own {
+    align-items: flex-end;
+}
+.room-chat-msg.system {
+    align-items: center;
+}
+.room-chat-msg-system {
+    font-size: 0.8rem;
+    color: var(--text-secondary);
+    font-style: italic;
+    padding: 4px 0;
+}
+.room-chat-bubble {
+    max-width: 85%;
+    padding: 8px 12px;
+    border-radius: 12px 12px 12px 4px;
+    background: var(--bg-glass);
+    border: 1px solid var(--card-border);
+    word-break: break-word;
+}
+.room-chat-msg.own .room-chat-bubble {
+    border-radius: 12px 12px 4px 12px;
+    background: rgba(229, 9, 20, 0.15);
+    border-color: rgba(229, 9, 20, 0.35);
+}
+.room-chat-bubble .time {
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-right: 6px;
+}
+.room-chat-bubble .user {
+    font-weight: 600;
+    color: var(--accent-red);
+}
+.room-chat-msg.own .room-chat-bubble .user {
+    color: var(--room-chat-user-color, var(--accent-red));
+}
+.room-chat-bubble .text {
+    color: var(--text-primary);
+}
 .room-chat-input-row {
-    padding: 10px;
+    flex-shrink: 0;
+    padding: 12px;
     border-top: 1px solid var(--card-border);
     display: flex;
-    gap: 8px;
+    gap: 10px;
     align-items: center;
+    background: var(--bg-primary);
 }
 .room-chat-input {
     flex: 1;
@@ -1799,8 +1878,8 @@ select.form-input {
     box-shadow: var(--focus-ring);
 }
 .room-chat-send {
-    width: 40px;
-    height: 40px;
+    width: 42px;
+    height: 42px;
     border-radius: 50%;
     border: none;
     background: var(--accent-red);
@@ -1809,9 +1888,16 @@ select.form-input {
     display: flex;
     align-items: center;
     justify-content: center;
-    transition: var(--transition-fast);
+    font-size: 1rem;
+    transition: filter 0.2s ease, transform 0.2s ease;
 }
-.room-chat-send:hover { filter: brightness(1.15); transform: scale(1.05); }
+.room-chat-send:hover {
+    filter: brightness(1.12);
+    transform: scale(1.05);
+}
+.room-chat-send:active {
+    transform: scale(0.98);
+}
 .room-floating-chat-btn {
     position: fixed;
     bottom: 24px;
