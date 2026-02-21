@@ -260,14 +260,11 @@ function checkAuthState() {
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
             <div class="profile-dropdown-menu" role="menu">
-                <div class="profile-menu-header">
-                    <span class="profile-menu-user">${escapeHtml(currentUser.username)}</span>
-                    <button type="button" class="profile-menu-close" aria-label="Close"><i class="fa-solid fa-times"></i></button>
-                </div>
                 <nav class="profile-menu-nav">
-                    <a href="profile/" class="profile-menu-item"><i class="fa-solid fa-user"></i> Profile</a>
-                    <a href="settings/" class="profile-menu-item"><i class="fa-solid fa-sliders"></i> Settings</a>
-                    <button type="button" class="profile-menu-item profile-menu-logout"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
+                    <a href="profile/" class="profile-menu-item"><i class="fa-solid fa-user"></i> My Profile</a>
+                    <a href="profile/#watchlist" class="profile-menu-item"><i class="fa-solid fa-bookmark"></i> Watchlist</a>
+                    <a href="settings/" class="profile-menu-item"><i class="fa-solid fa-gear"></i> Settings</a>
+                    <button type="button" class="profile-menu-item profile-menu-logout"><i class="fa-solid fa-right-from-bracket"></i> Log Out</button>
                 </nav>
             </div>
         `;
@@ -275,7 +272,6 @@ function checkAuthState() {
 
         const trigger = dropdown.querySelector('.profile-dropdown-trigger');
         const menu = dropdown.querySelector('.profile-dropdown-menu');
-        const closeBtn = dropdown.querySelector('.profile-menu-close');
         const logoutBtn = dropdown.querySelector('.profile-menu-logout');
 
         menu.style.display = 'none';
@@ -290,8 +286,6 @@ function checkAuthState() {
             e.stopPropagation();
             setMenuOpen(menu.style.display !== 'block');
         });
-
-        closeBtn.addEventListener('click', () => setMenuOpen(false));
 
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
