@@ -30,11 +30,17 @@
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="password">Password</label>
-                    <input type="password" id="password" class="form-input" required placeholder="••••••••">
+                    <input type="password" id="password" class="form-input" required minlength="8" placeholder="••••••••" title="Minimum 8 characters">
+                    <div class="password-strength" aria-hidden="true">
+                        <div class="password-strength-track">
+                            <div class="password-strength-fill" id="passwordStrengthFill"></div>
+                        </div>
+                        <span class="password-strength-label" id="passwordStrengthLabel"></span>
+                    </div>
                 </div>
                 <div class="form-group">
                     <label class="form-label" for="confirm-password">Confirm Password</label>
-                    <input type="password" id="confirm-password" class="form-input" required placeholder="••••••••">
+                    <input type="password" id="confirm-password" class="form-input" required minlength="8" placeholder="••••••••" title="Minimum 8 characters">
                 </div>
                 <button type="submit" class="btn btn-primary" style="width: 100%;">Sign Up</button>
             </form>
