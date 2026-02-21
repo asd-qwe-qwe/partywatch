@@ -259,14 +259,7 @@ function checkAuthState() {
                 <span>${escapeHtml(currentUser.username)}</span>
                 <i class="fa-solid fa-chevron-down"></i>
             </button>
-        `;
-        parent.replaceChild(dropdown, authBtn);
-
-        const overlay = document.createElement('div');
-        overlay.className = 'profile-menu-overlay';
-        overlay.setAttribute('aria-hidden', 'true');
-        overlay.innerHTML = `
-            <div class="profile-menu-panel">
+            <div class="profile-dropdown-menu" role="menu">
                 <div class="profile-menu-header">
                     <span class="profile-menu-user">${escapeHtml(currentUser.username)}</span>
                     <button type="button" class="profile-menu-close" aria-label="Close"><i class="fa-solid fa-times"></i></button>
@@ -278,48 +271,42 @@ function checkAuthState() {
                 </nav>
             </div>
         `;
-        document.body.appendChild(overlay);
+        parent.replaceChild(dropdown, authBtn);
 
         const trigger = dropdown.querySelector('.profile-dropdown-trigger');
-        const closeBtn = overlay.querySelector('.profile-menu-close');
-        const logoutBtn = overlay.querySelector('.profile-menu-logout');
-        const panel = overlay.querySelector('.profile-menu-panel');
-
-        function openMenu() {
-            overlay.classList.add('open');
-            overlay.setAttribute('aria-hidden', 'false');
-            trigger.setAttribute('aria-expanded', 'true');
-        }
-        function closeMenu() {
-            overlay.classList.remove('open');
-            overlay.setAttribute('aria-hidden', 'true');
-            trigger.setAttribute('aria-expanded', 'false');
-        }
+        const menu = dropdown.querySelector('.profile-dropdown-menu');
+        const closeBtn = dropdown.querySelector('.profile-menu-close');
+        const logoutBtn = dropdown.querySelector('.profile-menu-logout');
 
         trigger.addEventListener('click', (e) => {
             e.stopPropagation();
-            if (overlay.classList.contains('open')) closeMenu();
-            else openMenu();
+            dropdown.classList.toggle('open');
+            trigger.setAttribute('aria-expanded', dropdown.classList.contains('open'));
         });
 
-        closeBtn.addEventListener('click', closeMenu);
-        overlay.addEventListener('click', (e) => {
-            if (e.target === overlay) closeMenu();
+        closeBtn.addEventListener('click', () => {
+            dropdown.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
         });
-        panel.addEventListener('click', (e) => e.stopPropagation());
 
         logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
-            closeMenu();
+            dropdown.classList.remove('open');
             if (confirm(`Log out as ${currentUser.username}?`)) {
                 localStorage.removeItem('watch4party_currentUser');
                 window.location.reload();
             }
         });
 
-        overlay.querySelectorAll('.profile-menu-item[href]').forEach((link) => {
-            link.addEventListener('click', () => closeMenu());
+        dropdown.querySelectorAll('.profile-menu-item[href]').forEach((link) => {
+            link.addEventListener('click', () => { dropdown.classList.remove('open'); });
         });
+
+        document.addEventListener('click', () => {
+            dropdown.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+        });
+        menu.addEventListener('click', (e) => e.stopPropagation());
     }
 }
 
