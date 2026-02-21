@@ -100,16 +100,16 @@
                             </div>
                             <div class="room-video-card-info"><div class="room-video-card-title">HBO Max</div></div>
                         </div>
-                        <div class="room-platform-card" data-action="custom-link" id="room-platform-custom-link" title="Paste a video link">
-                            <div class="room-platform-icon room-platform-custom"><i class="fa-solid fa-link"></i></div>
-                            <div class="room-video-card-info"><div class="room-video-card-title">Custom Video Link</div></div>
-                        </div>
-                        <a href="https://www.watch2gether.com/" target="_blank" rel="noopener" class="room-platform-card room-platform-link" title="Anime">
+                        <div class="room-platform-card" data-platform="anime" title="Coming soon">
                             <div class="room-platform-icon room-platform-anime">
                                 <i class="fa-solid fa-dragon"></i>
                             </div>
                             <div class="room-video-card-info"><div class="room-video-card-title">Anime</div></div>
-                        </a>
+                        </div>
+                        <div class="room-platform-card" data-platform="custom" id="room-platform-custom-link" title="Coming soon">
+                            <div class="room-platform-icon room-platform-custom"><i class="fa-solid fa-link"></i></div>
+                            <div class="room-video-card-info"><div class="room-video-card-title">Custom Video Link</div></div>
+                        </div>
                         <div class="room-platform-card room-platform-viewall" id="room-platform-viewall" title="View all platforms">
                             <div class="room-platform-icon room-platform-viewall-icon">
                                 <div class="room-platform-viewall-inner">
@@ -785,18 +785,6 @@
                     else roomShowPlatformAppModal();
                 });
             }
-            var customLinkCard = document.getElementById('room-platform-custom-link');
-            if (customLinkCard) {
-                customLinkCard.addEventListener('click', function (e) {
-                    e.preventDefault();
-                    var searchInput = document.getElementById('room-search-input');
-                    if (searchInput) {
-                        searchInput.focus();
-                        searchInput.scrollIntoView({ behavior: 'smooth', block: 'center' });
-                    }
-                });
-            }
-
             initRoomSettings();
             try {
                 var bgImg = localStorage.getItem(roomSettingsKey('room_bg_image'));
