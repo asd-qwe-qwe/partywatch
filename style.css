@@ -1328,6 +1328,68 @@ select.form-input {
     font-size: 0.95rem;
 }
 
+/* Profile password modal - e-posta değişikliği için şifre onayı */
+.profile-password-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    background: rgba(0, 0, 0, 0.65);
+    backdrop-filter: blur(8px);
+    -webkit-backdrop-filter: blur(8px);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2rem;
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.25s ease, visibility 0.25s ease;
+}
+.profile-password-overlay.open {
+    opacity: 1;
+    visibility: visible;
+}
+.profile-password-panel {
+    width: 100%;
+    max-width: 400px;
+    background: var(--bg-secondary);
+    border: 1px solid var(--card-border);
+    border-radius: 20px;
+    padding: 1.75rem 2rem;
+    box-shadow: 0 25px 60px rgba(0, 0, 0, 0.5);
+    transform: scale(0.92);
+    transition: transform 0.25s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.profile-password-overlay.open .profile-password-panel {
+    transform: scale(1);
+}
+.profile-password-title {
+    font-size: 1.25rem;
+    margin-bottom: 0.5rem;
+    color: var(--text-primary);
+}
+.profile-password-text {
+    color: var(--text-secondary);
+    font-size: 0.95rem;
+    margin-bottom: 1.25rem;
+}
+.profile-password-overlay .form-input {
+    margin-bottom: 0.75rem;
+}
+.profile-password-error {
+    color: var(--accent-red);
+    font-size: 0.875rem;
+    margin-bottom: 1rem;
+}
+.profile-password-actions {
+    display: flex;
+    gap: 0.75rem;
+    justify-content: flex-end;
+    margin-top: 1.25rem;
+}
+.profile-password-actions .btn {
+    min-width: 100px;
+}
+
 /* Profile toast notification - ekran ortası, animasyonlu */
 .profile-toast {
     position: fixed;
