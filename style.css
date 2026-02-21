@@ -210,6 +210,7 @@ ul {
     border: 1px solid var(--card-border);
     border-radius: 16px;
     box-shadow: 0 15px 40px rgba(0, 0, 0, 0.4);
+    display: none;
     opacity: 0;
     visibility: hidden;
     transform: translateY(-6px);
@@ -219,6 +220,7 @@ ul {
     overflow: hidden;
 }
 .profile-dropdown.open .profile-dropdown-menu {
+    display: block;
     opacity: 1;
     visibility: visible;
     transform: translateY(0);
