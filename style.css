@@ -185,8 +185,6 @@ ul {
     align-items: center;
     justify-content: center;
     gap: 0.6rem;
-    min-height: 2.75rem;
-    min-width: 10rem;
     padding: 0.8rem 1.8rem;
     border-radius: 50px;
     border: 1px solid var(--card-border);
@@ -194,11 +192,9 @@ ul {
     color: var(--text-primary);
     font-weight: 600;
     font-size: 0.95rem;
-    line-height: 1.2;
     cursor: pointer;
     transition: var(--transition-fast);
     text-decoration: none;
-    box-sizing: border-box;
 }
 .profile-dropdown-trigger:hover {
     border-color: var(--text-secondary);
