@@ -1841,6 +1841,56 @@ select.form-input {
     box-shadow: 0 20px 60px rgba(0,0,0,0.4);
 }
 .room-modal.large { max-width: 560px; }
+
+/* Invite "App Required" modal - light style like reference image */
+.room-invite-app-modal {
+    background: #ffffff;
+    color: #1a1a1a;
+    text-align: center;
+    padding: 2.5rem 2rem 2rem;
+    max-width: 420px;
+    border-radius: 14px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+}
+.room-invite-app-modal .room-modal-close {
+    color: #666;
+}
+.room-invite-app-modal .room-modal-close:hover {
+    color: #1a1a1a;
+}
+.room-invite-app-icon {
+    font-size: 3rem;
+    color: #444;
+    margin-bottom: 1rem;
+}
+.room-invite-app-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin-bottom: 0.75rem;
+}
+.room-invite-app-text {
+    color: #444;
+    font-size: 0.95rem;
+    line-height: 1.5;
+    margin-bottom: 1.5rem;
+}
+.room-invite-app-btn {
+    display: inline-block;
+    background: #1a1a1a;
+    color: #fff !important;
+    padding: 14px 28px;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 1rem;
+    text-decoration: none;
+    transition: background 0.2s, transform 0.2s;
+}
+.room-invite-app-btn:hover {
+    background: #333;
+    transform: translateY(-2px);
+}
+
 .room-modal-close {
     position: absolute;
     top: 12px;
