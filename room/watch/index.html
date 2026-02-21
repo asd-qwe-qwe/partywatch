@@ -566,6 +566,14 @@
         window.roomShowSettings = roomShowSettings;
         window.roomShowHelp = roomShowHelp;
         window.roomHideModals = roomHideModals;
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape' && document.querySelector('.room-modal-overlay:not(.hidden)')) roomHideModals();
+        });
+        document.querySelectorAll('.room-modal-overlay').forEach(function (overlay) {
+            overlay.addEventListener('click', function (e) {
+                if (e.target === overlay) roomHideModals();
+            });
+        });
         window.roomToggleChat = roomToggleChat;
         window.roomToggleCamera = roomToggleCamera;
         window.roomToggleMic = roomToggleMic;
