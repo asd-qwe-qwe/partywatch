@@ -261,7 +261,7 @@ function checkAuthState() {
             </button>
             <div class="profile-dropdown-menu" role="menu">
                 <a href="profile/" class="profile-dropdown-item" role="menuitem"><i class="fa-solid fa-user"></i> Profile</a>
-                <a href="account/" class="profile-dropdown-item" role="menuitem"><i class="fa-solid fa-gear"></i> Account</a>
+                <a href="settings/" class="profile-dropdown-item" role="menuitem"><i class="fa-solid fa-sliders"></i> Settings</a>
                 <button type="button" class="profile-dropdown-item logout" role="menuitem"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
             </div>
         `;
