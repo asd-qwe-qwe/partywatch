@@ -41,7 +41,7 @@
                 <div class="profile-hero-avatar" id="profile-avatar">1</div>
                 <div class="profile-hero-info">
                     <h2 class="profile-hero-name" id="profile-username">—</h2>
-                    <p class="profile-hero-badge"><i class="fa-solid fa-crown"></i> Premium Member</p>
+                    <p class="profile-hero-badge" id="profile-plan-badge"><i class="fa-solid fa-crown"></i> <span id="profile-plan-label">Starter</span></p>
                     <p class="profile-hero-date" id="profile-member-since">Member since 2026</p>
                 </div>
             </section>
@@ -156,6 +156,15 @@
             if (loginPrompt) loginPrompt.style.display = 'none';
             if (app) app.style.display = 'block';
 
+            var plan = (profileData.plan || 'starter').toLowerCase();
+            if (!['starter', 'pro', 'ultimate'].includes(plan)) plan = 'starter';
+            profileData.plan = plan;
+            var planLabel = document.getElementById('profile-plan-label');
+            if (planLabel) planLabel.textContent = plan.charAt(0).toUpperCase() + plan.slice(1);
+            var planBadge = document.getElementById('profile-plan-badge');
+            if (planBadge) {
+                planBadge.className = 'profile-hero-badge profile-hero-badge--' + plan;
+            }
             document.getElementById('profile-username').textContent = user.username;
             document.getElementById('profile-avatar').textContent = (user.username || '').charAt(0).toUpperCase() || '?';
             document.getElementById('profile-display-name').value = profileData.displayName || user.username;
