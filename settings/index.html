@@ -45,12 +45,34 @@
 
             <section class="profile-card">
                 <h3 class="profile-card-title"><i class="fa-solid fa-bell"></i> Notifications</h3>
-                <p style="color: var(--text-secondary); font-size: 0.95rem;">Email and in-app notifications. Coming soon.</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">Email and in-app notifications.</p>
+                <div class="form-group">
+                    <label class="form-checkbox-label">
+                        <input type="checkbox" id="settings-notify-email" class="form-checkbox">
+                        <span>Email notifications</span>
+                    </label>
+                </div>
+                <div class="form-group">
+                    <label class="form-checkbox-label">
+                        <input type="checkbox" id="settings-notify-inapp" class="form-checkbox" checked>
+                        <span>In-app notifications</span>
+                    </label>
+                </div>
             </section>
 
             <section class="profile-card">
                 <h3 class="profile-card-title"><i class="fa-solid fa-language"></i> Language</h3>
-                <p style="color: var(--text-secondary); font-size: 0.95rem;">App language. Coming soon.</p>
+                <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: 1rem;">App language.</p>
+                <div class="form-group">
+                    <label for="settings-language" class="form-label">Language</label>
+                    <select id="settings-language" class="form-input form-select">
+                        <option value="en">English</option>
+                        <option value="tr">Türkçe</option>
+                        <option value="de">Deutsch</option>
+                        <option value="es">Español</option>
+                        <option value="fr">Français</option>
+                    </select>
+                </div>
             </section>
 
             <div class="auth-footer" style="margin-top: 1.5rem;">
@@ -91,6 +113,32 @@
                     localStorage.setItem('theme', next);
                     if (themeLabel) themeLabel.textContent = next === 'dark' ? 'Dark' : 'Light';
                     if (icon) icon.className = next === 'dark' ? 'fa-solid fa-moon' : 'fa-solid fa-sun';
+                });
+            }
+
+            var notifyEmail = document.getElementById('settings-notify-email');
+            var notifyInapp = document.getElementById('settings-notify-inapp');
+            var langSelect = document.getElementById('settings-language');
+            var KEY_NOTIFY_EMAIL = 'watch4party_settings_notify_email';
+            var KEY_NOTIFY_INAPP = 'watch4party_settings_notify_inapp';
+            var KEY_LANG = 'watch4party_settings_language';
+
+            if (notifyEmail) {
+                notifyEmail.checked = localStorage.getItem(KEY_NOTIFY_EMAIL) === '1';
+                notifyEmail.addEventListener('change', function () { localStorage.setItem(KEY_NOTIFY_EMAIL, notifyEmail.checked ? '1' : '0'); });
+            }
+            if (notifyInapp) {
+                notifyInapp.checked = localStorage.getItem(KEY_NOTIFY_INAPP) !== '0';
+                notifyInapp.addEventListener('change', function () { localStorage.setItem(KEY_NOTIFY_INAPP, notifyInapp.checked ? '1' : '0'); });
+            }
+            if (langSelect) {
+                var savedLang = localStorage.getItem(KEY_LANG) || 'en';
+                langSelect.value = savedLang;
+                html.setAttribute('lang', savedLang);
+                langSelect.addEventListener('change', function () {
+                    var v = langSelect.value;
+                    localStorage.setItem(KEY_LANG, v);
+                    html.setAttribute('lang', v);
                 });
             }
         })();
