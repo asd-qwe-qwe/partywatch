@@ -183,25 +183,30 @@ ul {
 .profile-dropdown-trigger {
     display: inline-flex;
     align-items: center;
-    gap: 0.5rem;
-    padding: 0.5rem 1rem;
+    justify-content: center;
+    gap: 0.6rem;
+    min-height: 2.75rem;
+    min-width: 10rem;
+    padding: 0.8rem 1.8rem;
     border-radius: 50px;
     border: 1px solid var(--card-border);
     background: rgba(255, 255, 255, 0.05);
     color: var(--text-primary);
     font-weight: 600;
-    font-size: 0.9rem;
+    font-size: 0.95rem;
+    line-height: 1.2;
     cursor: pointer;
     transition: var(--transition-fast);
     text-decoration: none;
+    box-sizing: border-box;
 }
 .profile-dropdown-trigger:hover {
     border-color: var(--text-secondary);
     background: rgba(255, 255, 255, 0.08);
 }
 .profile-dropdown-trigger i.fa-chevron-down {
-    font-size: 0.7rem;
-    opacity: 0.8;
+    font-size: 0.75rem;
+    opacity: 0.85;
     transition: transform 0.2s ease;
 }
 .profile-dropdown.open .profile-dropdown-trigger i.fa-chevron-down {
