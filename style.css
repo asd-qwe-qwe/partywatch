@@ -1900,10 +1900,9 @@ select.form-input {
     margin-top: 0.25rem;
 }
 
-/* Two-panel Settings modal – yanlamasına (sol menü | sağ içerik), kırmızı tema */
+/* Settings modal – yatay sekmeler (üstte Room | Personal), kırmızı tema */
 .room-settings-modal {
-    max-width: 720px;
-    min-width: 520px;
+    max-width: 640px;
     width: 95%;
     padding: 0;
     overflow: hidden;
@@ -1929,29 +1928,27 @@ select.form-input {
 }
 .room-settings-panel {
     display: flex;
-    flex-direction: row;
-    min-height: 400px;
+    flex-direction: column;
+    min-height: 360px;
 }
 .room-settings-nav {
-    width: 180px;
+    width: 100%;
     flex-shrink: 0;
     background: var(--bg-primary);
-    border-right: 1px solid var(--card-border);
+    border-bottom: 1px solid var(--card-border);
     display: flex;
-    flex-direction: column;
-    padding: 1rem 0;
-    gap: 4px;
+    flex-direction: row;
+    padding: 0;
+    gap: 0;
 }
 .room-settings-nav-item {
-    display: block;
-    width: calc(100% - 10px);
-    margin-left: 10px;
-    padding: 0.8rem 1rem;
-    text-align: left;
+    flex: 1;
+    padding: 1rem 1.25rem;
+    text-align: center;
     background: none;
     border: none;
-    border-radius: 0 var(--radius-md) var(--radius-md) 0;
-    border-left: 4px solid transparent;
+    border-bottom: 3px solid transparent;
+    margin-bottom: -1px;
     color: var(--text-secondary);
     font-size: 0.95rem;
     font-family: var(--font-body);
@@ -1960,12 +1957,12 @@ select.form-input {
 }
 .room-settings-nav-item:hover {
     color: var(--text-primary);
-    background: rgba(229, 9, 20, 0.08);
+    background: rgba(229, 9, 20, 0.06);
 }
 .room-settings-nav-item.active {
     color: var(--accent-red);
-    background: rgba(229, 9, 20, 0.12);
-    border-left-color: var(--accent-red);
+    background: rgba(229, 9, 20, 0.1);
+    border-bottom-color: var(--accent-red);
     font-weight: 600;
 }
 .room-settings-body {
