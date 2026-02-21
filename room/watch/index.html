@@ -746,11 +746,13 @@
 
             document.querySelectorAll('.room-tab').forEach(function (tab) {
                 tab.addEventListener('click', function () {
+                    var id = tab.getAttribute('data-tab');
+                    if (!id) return;
                     document.querySelectorAll('.room-tab').forEach(function (t) { t.classList.remove('active'); });
                     document.querySelectorAll('.room-tab-content').forEach(function (c) { c.classList.add('hidden'); });
                     tab.classList.add('active');
-                    var id = tab.getAttribute('data-tab');
-                    document.getElementById('room-' + id + '-view').classList.remove('hidden');
+                    var viewEl = document.getElementById('room-' + id + '-view');
+                    if (viewEl) viewEl.classList.remove('hidden');
                 });
             });
 
