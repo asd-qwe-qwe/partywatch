@@ -26,13 +26,16 @@
             <div class="room-sidebar-icon" title="Help" onclick="roomShowHelp()">
                 <i class="fa-solid fa-question"></i>
             </div>
-            <div class="room-sidebar-icon" id="room-btn-cam" title="Camera" onclick="roomToggleCamera()">
+            <div class="room-sidebar-icon" id="room-btn-cam" title="Camera (click to turn on/off)" onclick="roomToggleCamera()">
                 <i class="fa-solid fa-camera"></i>
             </div>
-            <div class="room-sidebar-icon" id="room-btn-mic" title="Microphone" onclick="roomToggleMic()">
+            <div class="room-sidebar-icon" id="room-btn-mic" title="Microphone (click to mute/unmute)" onclick="roomToggleMic()">
                 <i class="fa-solid fa-microphone"></i>
             </div>
-            <div class="room-sidebar-avatar" title="You">
+            <div class="room-mic-level-wrap" id="room-mic-level-wrap" title="Microphone level" style="display:none; margin-bottom: 6px;">
+                <div class="room-mic-level-bar"><div class="room-mic-level-fill" id="room-mic-level-fill"></div></div>
+            </div>
+            <div class="room-sidebar-avatar" title="You" id="room-sidebar-avatar">
                 <i class="fa-solid fa-user"></i>
             </div>
         </aside>
@@ -174,7 +177,12 @@
         window.roomData = null;
         window.roomYtPlayer = null;
         window.roomPendingVideoId = null;
-        window.roomLocalStream = null;
+        window.roomVideoStream = null;
+        window.roomAudioStream = null;
+        window.roomAudioTrack = null;
+        window.roomMicAnalyser = null;
+        window.roomMicAnimationId = null;
+        window.roomChatChannel = null;
 
         window.onYouTubeIframeAPIReady = function () {
             if (window.roomPendingVideoId) {
@@ -256,19 +264,61 @@
             }
         }
 
-        function roomSendMessage() {
-            var input = document.getElementById('room-chat-input');
+        function roomChatStorageKey() {
+            return window.roomCode ? 'watch4party_chat_' + window.roomCode : null;
+        }
+        function roomGetDisplayName() {
+            try { return sessionStorage.getItem('watch4party_room_displayName') || 'You'; } catch (_) { return 'You'; }
+        }
+        function roomLoadChat() {
+            var key = roomChatStorageKey();
+            if (!key) return [];
+            try {
+                var raw = localStorage.getItem(key);
+                return raw ? JSON.parse(raw) : [];
+            } catch (_) { return []; }
+        }
+        function roomSaveChat(messages) {
+            var key = roomChatStorageKey();
+            if (!key) return;
+            try { localStorage.setItem(key, JSON.stringify(messages)); } catch (_) {}
+        }
+        function roomRenderChatMessage(msg) {
             var list = document.getElementById('room-chat-messages');
-            var text = (input && input.value || '').trim();
-            if (!text || !list) return;
-            var now = new Date();
-            var time = (now.getHours() < 10 ? '0' : '') + now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+            if (!list) return;
             var div = document.createElement('div');
             div.className = 'room-chat-msg';
-            div.innerHTML = '<span class="time">[' + time + ']</span><span class="user">You:</span> ' + roomEscapeHtml(text);
+            var isYou = msg.user === roomGetDisplayName() || msg.user === 'You';
+            div.innerHTML = '<span class="time">[' + roomEscapeHtml(msg.time) + ']</span><span class="user">' + roomEscapeHtml(msg.user) + ':</span> ' + roomEscapeHtml(msg.text);
             list.appendChild(div);
             list.scrollTop = list.scrollHeight;
-            input.value = '';
+        }
+        function roomRenderAllChat(messages) {
+            var list = document.getElementById('room-chat-messages');
+            if (!list) return;
+            list.innerHTML = '';
+            (messages || []).forEach(roomRenderChatMessage);
+        }
+        function roomBroadcastChatMessage(msg) {
+            if (window.roomChatChannel) {
+                try { window.roomChatChannel.postMessage(msg); } catch (_) {}
+            }
+        }
+
+        function roomSendMessage() {
+            var input = document.getElementById('room-chat-input');
+            var text = (input && input.value || '').trim();
+            if (!text) return;
+            var now = new Date();
+            var time = (now.getHours() < 10 ? '0' : '') + now.getHours() + ':' + (now.getMinutes() < 10 ? '0' : '') + now.getMinutes();
+            var user = roomGetDisplayName();
+            var msg = { time: time, user: user, text: text, clientId: window.roomChatClientId };
+            var messages = roomLoadChat();
+            messages.push(msg);
+            roomSaveChat(messages);
+            roomRenderChatMessage(msg);
+            roomBroadcastChatMessage(msg);
+            if (input) input.value = '';
         }
 
         function roomShowInvite() {
@@ -289,24 +339,78 @@
         async function roomToggleCamera() {
             var video = document.getElementById('room-local-preview');
             var btn = document.getElementById('room-btn-cam');
-            if (window.roomLocalStream && window.roomLocalStream.getVideoTracks().length && window.roomLocalStream.getVideoTracks()[0].enabled) {
-                window.roomLocalStream.getVideoTracks()[0].stop();
-                if (video) video.style.display = 'none';
-                if (btn) btn.classList.remove('active');
+            if (window.roomVideoStream && window.roomVideoStream.getVideoTracks().length) {
+                window.roomVideoStream.getVideoTracks().forEach(function (t) { t.stop(); });
+                window.roomVideoStream = null;
+                if (video) { video.srcObject = null; video.style.display = 'none'; }
+                if (btn) { btn.classList.remove('active'); btn.querySelector('i').className = 'fa-solid fa-camera'; }
                 return;
             }
             try {
-                window.roomLocalStream = await navigator.mediaDevices.getUserMedia({ video: true, audio: false });
-                if (video) { video.srcObject = window.roomLocalStream; video.style.display = 'block'; }
-                if (btn) btn.classList.add('active');
-            } catch (e) { alert('Camera access denied'); }
+                var stream = await navigator.mediaDevices.getUserMedia({ video: { facingMode: 'user', width: { ideal: 640 }, height: { ideal: 360 } }, audio: false });
+                window.roomVideoStream = stream;
+                if (video) { video.srcObject = stream; video.style.display = 'block'; video.play().catch(function () {}); }
+                if (btn) { btn.classList.add('active'); btn.querySelector('i').className = 'fa-solid fa-video'; }
+            } catch (e) {
+                alert('Camera access denied or not available. Check browser permissions.');
+            }
         }
         async function roomToggleMic() {
             var btn = document.getElementById('room-btn-mic');
+            var icon = btn ? btn.querySelector('i') : null;
+            var levelWrap = document.getElementById('room-mic-level-wrap');
+            var levelFill = document.getElementById('room-mic-level-fill');
+            if (window.roomAudioTrack) {
+                window.roomAudioTrack.enabled = !window.roomAudioTrack.enabled;
+                if (icon) icon.className = window.roomAudioTrack.enabled ? 'fa-solid fa-microphone' : 'fa-solid fa-microphone-slash';
+                if (btn) btn.classList.toggle('active', window.roomAudioTrack.enabled);
+                if (levelWrap) levelWrap.style.display = window.roomAudioTrack.enabled ? 'flex' : 'none';
+                if (window.roomAudioTrack.enabled) roomStartMicLevel(); else roomStopMicLevel();
+                return;
+            }
             try {
-                await navigator.mediaDevices.getUserMedia({ audio: true });
-                if (btn) btn.classList.toggle('active');
-            } catch (e) { alert('Microphone access denied'); }
+                var stream = await navigator.mediaDevices.getUserMedia({ audio: true, video: false });
+                window.roomAudioStream = stream;
+                window.roomAudioTrack = stream.getAudioTracks()[0];
+                if (!window.roomAudioTrack) { stream.getTracks().forEach(function (t) { t.stop(); }); window.roomAudioStream = null; return; }
+                if (icon) icon.className = 'fa-solid fa-microphone';
+                if (btn) btn.classList.add('active');
+                if (levelWrap) levelWrap.style.display = 'flex';
+                roomStartMicLevel();
+            } catch (e) {
+                alert('Microphone access denied or not available. Check browser permissions.');
+            }
+        }
+        function roomStartMicLevel() {
+            if (!window.roomAudioStream || !window.roomAudioTrack || !window.roomAudioTrack.enabled) return;
+            var analyser = window.roomMicAnalyser;
+            if (!analyser) {
+                var ctx = null;
+                try { ctx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) { return; }
+                var source = ctx.createMediaStreamSource(window.roomAudioStream);
+                analyser = ctx.createAnalyser();
+                analyser.fftSize = 256;
+                analyser.smoothingTimeConstant = 0.8;
+                source.connect(analyser);
+                window.roomMicAnalyser = analyser;
+            }
+            var data = new Uint8Array(analyser.frequencyBinCount);
+            function tick() {
+                if (!window.roomAudioTrack || !window.roomAudioTrack.enabled) { window.roomMicAnimationId = null; return; }
+                analyser.getByteFrequencyData(data);
+                var sum = 0;
+                for (var i = 0; i < data.length; i++) sum += data[i];
+                var avg = sum / data.length;
+                var fill = document.getElementById('room-mic-level-fill');
+                if (fill) fill.style.height = Math.min(100, Math.round(avg * 0.4)) + '%';
+                window.roomMicAnimationId = requestAnimationFrame(tick);
+            }
+            tick();
+        }
+        function roomStopMicLevel() {
+            if (window.roomMicAnimationId) { cancelAnimationFrame(window.roomMicAnimationId); window.roomMicAnimationId = null; }
+            var fill = document.getElementById('room-mic-level-fill');
+            if (fill) fill.style.height = '0%';
         }
 
         function roomCopyInviteLink() {
@@ -336,6 +440,26 @@
             if (badge) badge.textContent = code;
             if (nameText) nameText.textContent = room.hostName ? room.hostName + "'s room" : 'Watch party';
             document.getElementById('room-invite-code').textContent = code;
+
+            window.roomChatClientId = Math.random().toString(36).slice(2);
+            var chatMessages = roomLoadChat();
+            if (chatMessages.length === 0) {
+                chatMessages = [{ time: '--:--', user: 'System', text: 'Welcome to the room!' }];
+                roomSaveChat(chatMessages);
+            }
+            roomRenderAllChat(chatMessages);
+            try {
+                window.roomChatChannel = new BroadcastChannel('watch4party_chat_' + code);
+                window.roomChatChannel.onmessage = function (ev) {
+                    var msg = ev.data;
+                    if (!msg || !msg.time || !msg.user || !msg.text) return;
+                    if (msg.clientId === window.roomChatClientId) return;
+                    var list = roomLoadChat();
+                    list.push(msg);
+                    roomSaveChat(list);
+                    roomRenderChatMessage(msg);
+                };
+            } catch (_) {}
 
             document.querySelectorAll('.room-tab').forEach(function (tab) {
                 tab.addEventListener('click', function () {
