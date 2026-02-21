@@ -251,21 +251,56 @@ function checkAuthState() {
 
     // Only run this on pages with the navbar login button (like index.html)
     if (currentUser && authBtn && authBtn.textContent.trim() === 'Login') {
-        // Change "Login" button to User Profile / Logout
-        authBtn.textContent = currentUser.username;
-        authBtn.classList.remove('btn-primary');
-        authBtn.classList.add('btn-outline'); // Use outline style for logged in state
-        authBtn.title = "Click to Log Out";
+        const parent = authBtn.parentElement;
+        const dropdown = document.createElement('div');
+        dropdown.className = 'profile-dropdown';
+        dropdown.innerHTML = `
+            <button type="button" class="profile-dropdown-trigger" aria-expanded="false" aria-haspopup="true">
+                <span>${escapeHtml(currentUser.username)}</span>
+                <i class="fa-solid fa-chevron-down"></i>
+            </button>
+            <div class="profile-dropdown-menu" role="menu">
+                <a href="#profile" class="profile-dropdown-item" role="menuitem"><i class="fa-solid fa-user"></i> Profile</a>
+                <a href="#account" class="profile-dropdown-item" role="menuitem"><i class="fa-solid fa-gear"></i> Account</a>
+                <button type="button" class="profile-dropdown-item logout" role="menuitem"><i class="fa-solid fa-right-from-bracket"></i> Log out</button>
+            </div>
+        `;
+        parent.replaceChild(dropdown, authBtn);
 
-        // Change link functionality to Logout
-        authBtn.href = "#";
-        authBtn.addEventListener('click', (e) => {
+        const trigger = dropdown.querySelector('.profile-dropdown-trigger');
+        const menu = dropdown.querySelector('.profile-dropdown-menu');
+        const logoutBtn = dropdown.querySelector('.profile-dropdown-item.logout');
+
+        trigger.addEventListener('click', (e) => {
+            e.stopPropagation();
+            dropdown.classList.toggle('open');
+            trigger.setAttribute('aria-expanded', dropdown.classList.contains('open'));
+        });
+
+        logoutBtn.addEventListener('click', (e) => {
             e.preventDefault();
+            dropdown.classList.remove('open');
             if (confirm(`Log out as ${currentUser.username}?`)) {
                 localStorage.removeItem('watch4party_currentUser');
                 window.location.reload();
             }
         });
+
+        dropdown.querySelectorAll('.profile-dropdown-item').forEach((item) => {
+            item.addEventListener('click', () => { dropdown.classList.remove('open'); });
+        });
+
+        document.addEventListener('click', () => {
+            dropdown.classList.remove('open');
+            trigger.setAttribute('aria-expanded', 'false');
+        });
+        menu.addEventListener('click', (e) => e.stopPropagation());
     }
+}
+
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
 }
 
