@@ -1631,7 +1631,7 @@ select.form-input {
 }
 .room-player-area {
     flex: 1;
-    padding: 0.2rem 1rem 0.6rem;
+    padding: 0.15rem 1rem 0.4rem;
     display: flex;
     flex-direction: column;
     overflow: hidden;
@@ -1640,7 +1640,7 @@ select.form-input {
 .room-video-container {
     width: 100%;
     aspect-ratio: 16/9;
-    max-height: calc(100vh - 56px - 150px);
+    max-height: calc(100vh - 56px - 220px);
     background: #000;
     border-radius: var(--radius-lg);
     overflow: hidden;
@@ -1704,14 +1704,14 @@ select.form-input {
 
 /* Platforms section (YouTube, Netflix, Spotify, Disney+) */
 .room-platforms-section {
-    padding: 0.25rem 0 0.5rem;
+    padding: 0.2rem 0 0.35rem;
     flex-shrink: 0;
 }
 .room-platforms-title {
-    font-size: 0.95rem;
+    font-size: 0.9rem;
     font-weight: 600;
     color: var(--text-secondary);
-    margin: 0 0 0.5rem;
+    margin: 0 0 0.35rem;
 }
 .room-platforms-grid {
     padding: 0;
@@ -1860,7 +1860,7 @@ select.form-input {
 }
 .room-platform-card .room-video-card-info {
     width: 100%;
-    padding: 10px 12px;
+    padding: 8px 10px;
     text-align: center;
 }
 
