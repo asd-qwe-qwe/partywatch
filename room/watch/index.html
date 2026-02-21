@@ -105,17 +105,15 @@
 
     <div id="room-chat-overlay" class="room-chat-overlay hidden">
         <div class="room-chat-header">
-            <span>Chat</span>
-            <i class="fa-solid fa-xmark" onclick="roomToggleChat()"></i>
+            <span class="room-chat-title"><i class="fa-solid fa-comments"></i> Chat</span>
+            <button type="button" class="room-chat-close" onclick="roomToggleChat()" aria-label="Close chat"><i class="fa-solid fa-xmark"></i></button>
         </div>
         <div class="room-chat-messages" id="room-chat-messages">
-            <div class="room-chat-msg">
-                <span class="time">--:--</span><span class="user">System:</span> Welcome to the room!
-            </div>
+            <!-- Messages rendered by JS -->
         </div>
         <div class="room-chat-input-row">
-            <input type="text" class="room-chat-input" id="room-chat-input" placeholder="Send a message...">
-            <button type="button" class="room-chat-send" onclick="roomSendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
+            <input type="text" class="room-chat-input" id="room-chat-input" placeholder="Type a message..." maxlength="500" autocomplete="off">
+            <button type="button" class="room-chat-send" id="room-chat-send-btn" onclick="roomSendMessage()" aria-label="Send"><i class="fa-solid fa-paper-plane"></i></button>
         </div>
     </div>
     <div class="room-floating-chat-btn" id="room-floating-chat-btn" onclick="roomToggleChat()">
@@ -354,9 +352,18 @@
         function roomRenderChatMessage(msg) {
             var list = document.getElementById('room-chat-messages');
             if (!list) return;
+            var isOwn = msg.user === roomGetDisplayName();
+            var isSystem = msg.user === 'System';
             var div = document.createElement('div');
-            div.className = 'room-chat-msg' + (msg.user === roomGetDisplayName() ? ' own' : '');
-            div.innerHTML = '<span class="time">[' + roomEscapeHtml(msg.time) + ']</span><span class="user">' + roomEscapeHtml(msg.user) + ':</span> ' + roomEscapeHtml(msg.text);
+            div.className = 'room-chat-msg' + (isOwn ? ' own' : '') + (isSystem ? ' system' : '');
+            if (isSystem) {
+                div.innerHTML = '<span class="room-chat-msg-system">' + roomEscapeHtml(msg.text) + '</span>';
+            } else {
+                div.innerHTML = '<div class="room-chat-bubble">' +
+                    '<span class="time">' + roomEscapeHtml(msg.time) + '</span> ' +
+                    '<span class="user">' + roomEscapeHtml(msg.user) + '</span>: ' +
+                    '<span class="text">' + roomEscapeHtml(msg.text) + '</span></div>';
+            }
             list.appendChild(div);
             list.scrollTop = list.scrollHeight;
         }
@@ -495,8 +502,10 @@
         window.roomShowSettings = roomShowSettings;
         window.roomShowHelp = roomShowHelp;
         window.roomHideModals = roomHideModals;
+        window.roomToggleChat = roomToggleChat;
         window.roomToggleCamera = roomToggleCamera;
         window.roomToggleMic = roomToggleMic;
+        window.roomSendMessage = roomSendMessage;
 
         function roomCopyInviteLink() {
             var base = window.location.pathname.replace(/\/watch\/?.*$/, '') || '/room';
