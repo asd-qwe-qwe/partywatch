@@ -2045,8 +2045,24 @@ select.form-input {
     color: var(--text-primary);
     text-align: center;
 }
+.room-help-doc-btn {
+    display: inline-block;
+    padding: 12px 24px;
+    background: var(--accent-red);
+    color: #fff !important;
+    border-radius: var(--radius-md);
+    font-weight: 600;
+    font-size: 0.95rem;
+    text-decoration: none;
+    margin-bottom: 1rem;
+    transition: filter 0.2s ease, transform 0.2s ease;
+}
+.room-help-doc-btn:hover {
+    filter: brightness(1.1);
+    transform: translateY(-1px);
+}
 .room-help-content .room-download-link {
-    margin-top: 0.5rem;
+    margin-top: 0;
 }
 
 /* Settings modal – yatay sekmeler (üstte Room | Personal), kırmızı tema */
