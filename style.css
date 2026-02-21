@@ -1773,7 +1773,8 @@ select.form-input {
 .room-platform-hulu,
 .room-platform-hbomax,
 .room-platform-custom,
-.room-platform-anime { background: #000 !important; background-color: #000 !important; }
+.room-platform-anime,
+.room-platform-viewall-icon { background: #000 !important; background-color: #000 !important; }
 .room-platform-custom { border: 1px dashed rgba(255,255,255,0.2); }
 /* Hulu logosu siyah zemin üzerinde beyaz görünsün */
 .room-platform-hulu .room-platform-logo { filter: brightness(0) invert(1); }
@@ -1786,47 +1787,13 @@ select.form-input {
     color: inherit;
 }
 
-/* +50 platforms / View all card - aynı boyutta, en sağda */
+/* +50 platforms kartı - diğer platform kartlarıyla aynı yapı (ikon + başlık) */
 .room-platform-viewall-icon {
     background: #000 !important;
-    position: relative;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-    gap: 4px;
 }
-.room-platform-viewall-number {
-    font-size: 1.5rem;
-    font-weight: 800;
-    color: #fff;
-    line-height: 1;
-    letter-spacing: -0.03em;
-}
-.room-platform-viewall-label {
-    font-size: 0.7rem;
-    font-weight: 600;
-    color: rgba(255,255,255,0.85);
-    text-align: center;
-    line-height: 1.2;
-    text-transform: lowercase;
-}
-.room-platform-viewall-btn {
-    background: var(--accent-red);
-    color: #fff;
-    border: none;
-    padding: 6px 14px;
-    border-radius: 50px;
-    font-size: 0.8rem;
-    font-weight: 600;
-    cursor: pointer;
-    transition: filter 0.2s ease, transform 0.2s ease;
-}
-.room-platform-viewall-btn:hover {
-    filter: brightness(1.1);
-    transform: translateY(-2px);
-}
-.room-platform-viewall-btn:active {
-    transform: translateY(0);
+.room-platform-viewall-icon i {
+    font-size: 2rem;
+    color: rgba(255,255,255,0.9);
 }
 
 /* Platform "Download App" modal - içerik her zaman görünsün */
