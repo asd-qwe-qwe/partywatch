@@ -1735,7 +1735,7 @@ select.form-input {
     align-items: center;
     justify-content: center;
 }
-.room-platform-netflix { background: #e50914; }
+.room-platform-netflix { background: #000; }
 .room-platform-disney { background: #113ccf; }
 .room-platform-prime { background: #00a8e1; }
 .room-platform-hulu { background: #1ce783; }
